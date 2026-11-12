@@ -1,0 +1,6 @@
+Glam Run - versione per GitHub Pages (tutti i file nella stessa cartella)
+
+1) Decomprimi lo zip.
+2) Su GitHub: nuovo repository pubblico, Add file > Upload files, seleziona tutti i file e conferma.
+3) Settings > Pages > Deploy from a branch > main > /(root) > Save.
+4) Apri l'indirizzo https://TUONOME.github.io/NOMEREPO/ in Safari e usa Condividi > Aggiungi alla schermata Home.
