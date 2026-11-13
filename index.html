@@ -41,7 +41,7 @@
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 html,body{height:100%;margin:0;overflow:hidden;overscroll-behavior:none;background:#7e3a1c;font:700 16px Fredoka,"Trebuchet MS",system-ui,sans-serif;color:var(--txt);touch-action:none;-webkit-user-select:none;user-select:none}
 body{position:fixed;left:0;top:0;width:100%}
-canvas#c{position:fixed;left:0;top:0;width:100%;height:100%;height:100lvh}
+canvas#c{position:fixed;left:0;top:0;width:100%;height:100%}
 .scr{position:fixed;inset:0;display:none;flex-direction:column;align-items:center;gap:12px;z-index:5;padding:calc(env(safe-area-inset-top,0px) + 18px) 16px calc(env(safe-area-inset-bottom,0px) + 22px)}
 .scr.on{display:flex}
 #rs,#ps{justify-content:center;background:rgba(20,10,60,.45)}
@@ -260,7 +260,7 @@ const save=()=>{try{localStorage.setItem('glam',JSON.stringify(S))}catch(e){}};
 if(S.v!=2){S.v=2;S.st={};S.unl=1}if(!S.st)S.st={};S.u9=S.u9||1;S.u10=S.u10||1;if(!S.ut){S.ut={dj:0,mg:0,hp:0,tr:0};if(S.up)for(const u of UP)if(S.up[u[0]]>0)S.ut[u[0]]=u[6]}save();
 let VW,VH,GY,sc,DPR=1,mode='menu',cam=0,T=0,hm=1,LV=1,LEN=1e9,AR=1e9,gp=[],ob=[],pl=[],co=[],sol=[],pcs=[],tr=[],en=[],bu=[],bs=null,bdone=0,Th=TH[0];
 let wx=0,y=0,vy=0,on=1,jc=0,cy=0,sl=0,ws=0,inv=0,hp=3,mhp=3,col=0,hits=0,sp=240,sq=0,fin=0,fl=0,tab=1,rt=0,hto=0;
-function rs(){const d=Math.min(devicePixelRatio||1,2),w=cv.clientWidth||innerWidth,h=cv.clientHeight||innerHeight,og=GY;DPR=d;cv.width=w*d;cv.height=h*d;sc=Math.min(w/420,h/380);VW=w/sc;VH=h/sc;g.setTransform(sc*d,0,0,sc*d,0,0);g.imageSmoothingQuality='high';GY=VH*(mode=='menu'?.62:.7);if(og!=null&&(mode=='play'||mode=='pause'||mode=='end'))y+=GY-og}
+function rs(){const d=Math.min(devicePixelRatio||1,2),w=innerWidth,h=innerHeight,og=GY,OV=100;DPR=d;cv.style.height=(h+OV)+'px';cv.width=Math.round(w*d);cv.height=Math.round((h+OV)*d);sc=Math.min(w/420,h/380);VW=w/sc;VH=h/sc;g.setTransform(sc*d,0,0,sc*d,0,0);g.imageSmoothingQuality='high';GY=VH*(mode=='menu'?.62:.7);if(og!=null&&(mode=='play'||mode=='pause'||mode=='end'))y+=GY-og}
 /* resize con debounce: evita che la scena "salti" mentre il browser mobile cambia la barra degli indirizzi */
 addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(rs,80)});
 if(!CanvasRenderingContext2D.prototype.roundRect)CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){r=Math.min(Array.isArray(r)?r[0]:r||0,w/2,h/2);this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath()};
