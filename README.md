@@ -5,7 +5,7 @@
 
   <img src="./logo.PNG" alt="Logo" width="120" />
 
-  <h1>Glam Run</h1>
+  <h1>Glam Run V.14-11a</h1>
   <p>il mio nuovo gioco politicamente corretto.</p>
 </div>
 
