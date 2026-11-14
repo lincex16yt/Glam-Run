@@ -5,8 +5,8 @@
 
   <img src="./logo.PNG" alt="Logo" width="120" />
 
-  <h1>Nome del tuo Progetto</h1>
-  <p>Scrivi qui una breve descrizione di cosa fa la tua repository.</p>
+  <h1>Glam Run</h1>
+  <p>il mio nuovo gioco politicamente corretto.</p>
 </div>
 
 ---
