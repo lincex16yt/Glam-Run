@@ -947,6 +947,10 @@ function heroMod(c,x,y,st,t,sk,sq,vv){
    c.drawImage(im,fr[0]+hx,fr[1]+sh,hw,fr[3]-sh,(hx-fr[4])*k,-1,hw*k,h-sp+1);c.restore()}}
  else{c.translate(0,-h/2);c.rotate(rot);c.drawImage(im,fr[0],fr[1],fr[2],fr[3],-ax,-h/2,w,h)}
  c.restore()}
+const KV={db:null,open(){return this.db||(this.db=new Promise((res,rej)=>{const r=indexedDB.open('glamdb',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)}))},
+async get(k){const d=await this.open();return new Promise((res,rej)=>{const q=d.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>res(q.result);q.onerror=()=>rej(q.error)})},
+async set(k,v){const d=await this.open();return new Promise((res,rej)=>{const t=d.transaction('kv','readwrite');t.objectStore('kv').put(v,k);t.oncomplete=()=>res();t.onerror=t.onabort=()=>rej(t.error)})},
+async del(k){try{const d=await this.open();return new Promise(res=>{const t=d.transaction('kv','readwrite');t.objectStore('kv').delete(k);t.oncomplete=t.onerror=t.onabort=()=>res()})}catch(e){}}};
 const MODKEY='glamMod',_av=document.querySelector('.avb'),_hv=document.querySelector('#hud>img'),AV0=_av.src,HV0=_hv.src,VER0=document.querySelector('#ver').innerHTML;
 const AUOK=u=>typeof u=='string'&&u.length<1.5e7&&/^data:audio\/(mpeg|mp3|ogg|wav|x-wav|webm|mp4|aac);base64,[A-Za-z0-9+\/=]+$/.test(u),AUK=['music','jump','jump2','coin','hurt','slide','fall','stomp','win','lose','land','bhit'];
 const IMGOK=u=>typeof u=='string'&&/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(u);
@@ -998,20 +1002,19 @@ function modApply(m){
  const v=$('#ver');v.innerHTML='';const b=document.createElement('b');b.textContent=m.version;v.appendChild(b);
  xApply();save();modUi()}
 function modOff(){
- MOD=null;XMOD=null;MIM=MBG=null;try{localStorage.removeItem(MODKEYX)}catch(e){}xApply();Mus.setMod(null);document.body.classList.remove('skoff');
+ MOD=null;XMOD=null;MIM=MBG=null;try{localStorage.removeItem(MODKEYX)}catch(e){}KV.del(MODKEYX);xApply();Mus.setMod(null);document.body.classList.remove('skoff');
  if(S._sk!=null){if(SK[S._sk]&&S.own[S._sk])S.skin=S._sk;delete S._sk}
  $('#mlogo').style.display='none';document.querySelector('#menu h1').style.display='';_av.src=AV0;_hv.src=HV0;$('#ver').innerHTML=VER0;
- try{localStorage.removeItem(MODKEY)}catch(e){}save();modUi();toast('Gioco base ripristinato')}
+ try{localStorage.removeItem(MODKEY)}catch(e){}KV.del(MODKEY);save();modUi();toast('Gioco base ripristinato')}
 function modUi(){const a=[];if(MOD)a.push(MOD.name+' ('+MOD.version+')');if(XMOD)a.push(XMOD.name+' ('+XMOD.version+')');$('#mds').textContent=a.length?'Mod attiva: '+a.join(' + '):'Nessuna mod attiva: stai giocando al gioco base.';$('#mdr').style.display=a.length?'':'none'}
 function modOpen(){modUi();$('#md').classList.add('on')}
 function modClose(){$('#md').classList.remove('on')}
 $('#modf').addEventListener('change',async e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
  try{if(f.size>2e7)throw'File troppo grande';const txt=await f.text(),d=new DOMParser().parseFromString(txt,'text/html'),sc=d.querySelector('script#glam-mod');if(!sc)throw'Questo file non è una mod';
-  const m=JSON.parse(sc.textContent);modCheck(m);modApply(m);let kept=1;try{localStorage.setItem(m.atlas==null?MODKEYX:MODKEY,JSON.stringify(m))}catch(er){kept=0}
+  const m=JSON.parse(sc.textContent);modCheck(m);modApply(m);let kept=1;{const kk=m.atlas==null?MODKEYX:MODKEY;try{await KV.set(kk,JSON.stringify(m));try{localStorage.removeItem(kk)}catch(e){}}catch(er){try{localStorage.setItem(kk,JSON.stringify(m))}catch(er2){kept=0}}}
   modClose();toast(kept?'Mod caricata: '+m.name:'Mod caricata (solo per questa sessione)');sfx('win')}
  catch(er){toast('Mod non valida'+(typeof er=='string'?': '+er:''));sfx('hurt')}});
-try{const sv=localStorage.getItem(MODKEY);if(sv){const m=JSON.parse(sv);modCheck(m);modApply(m)}}catch(e){try{localStorage.removeItem(MODKEY)}catch(e2){}}
-try{const sx=localStorage.getItem(MODKEYX);if(sx){const m=JSON.parse(sx);modCheck(m);modApply(m)}}catch(e){try{localStorage.removeItem(MODKEYX)}catch(e2){}}
+(async()=>{for(const kk of [MODKEY,MODKEYX]){try{let v=null;try{v=await KV.get(kk)}catch(e){}if(!v){try{v=localStorage.getItem(kk)}catch(e){}}if(v){const m=JSON.parse(v);modCheck(m);modApply(m)}}catch(e){KV.del(kk);try{localStorage.removeItem(kk)}catch(e2){}}}xApply();modUi()})();
 xApply();modUi();
 rs();show('menu');requestAnimationFrame(fr);
 </script>
