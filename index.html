@@ -936,7 +936,10 @@ function heroMod(c,x,y,st,t,sk,sq,vv){
  const pick=n=>{const v=A[n]!=null?A[n]:A.idle;return F[Array.isArray(v)?v[(t*7|0)%v.length]:v]};
  let fr=pick('idle'),bob=0,rot=0,sx=1,sy=1,ox=0,run=0;
  if(st=='idle'){sy=1+R(t*3)*.016;sx=1-R(t*3)*.01}
- else if(st=='run'){run=1;fr=pick('run')}
+ else if(st=='run'){const v=A.run!=null?A.run:A.idle,multi=Array.isArray(v)&&v.length>1;let rs=MOD.runStyle||'auto';if(rs=='auto')rs=multi?'frames':'hop';
+  if(rs=='legs'){run=1;fr=pick('run')}
+  else if(rs=='frames'){fr=F[Array.isArray(v)?v[(t*10|0)%v.length]:v];bob=-Math.abs(R(t*13))*2.5}
+  else{fr=F[Array.isArray(v)?v[0]:v];const a=t*13;bob=-Math.abs(R(a))*5;sy=1+R(a*2)*.07;sx=1/Math.sqrt(sy);rot=R(a)*.1}}
  else if(st=='jump'){fr=pick('jump');sy=1+Math.min(.12,Math.abs(vv)/4800);sx=1/Math.sqrt(sy);rot=Math.max(-.14,Math.min(.16,vv/3600))}
  else if(st=='fall'){fr=pick('fall');sy=1+Math.min(.14,Math.abs(vv)/4000);sx=1/Math.sqrt(sy);rot=Math.max(-.14,Math.min(.18,vv/3600))}
  else if(st=='slide'){fr=pick('slide');const e=.65-sl;if(sl<.1||e<.05){sy=.82;sx=1.1}else{sy=.6;sx=1.15;rot=.32;bob=R(t*38)*.6}}
@@ -999,6 +1002,7 @@ function modCheck(m){
  for(const n in A){const v=A[n];if(!(okI(v)||(Array.isArray(v)&&v.length&&v.every(okI))))throw'Animazione non valida: '+n}
  if(m.scale!=null&&!(m.scale>=.2&&m.scale<=1.5))throw'Scala non valida';
  if(m.bax!=null&&!Number.isFinite(m.bax))throw'Ancora non valida';
+ if(m.runStyle!=null&&!['auto','legs','hop','frames'].includes(m.runStyle))throw'Stile corsa non valido';
  }
  if(m.audio!=null){if(typeof m.audio!='object'||Array.isArray(m.audio))throw'Audio non valido';for(const k in m.audio)if(!AUK.includes(k)||!AUOK(m.audio[k]))throw'Audio non valido: '+k}
  xCheck(m)}
