@@ -31,7 +31,7 @@
 <link rel="apple-touch-startup-image" media="(device-width: 768px) and (device-height: 1024px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="splash-1536x2048.jpg">
 <link rel="apple-touch-startup-image" media="(device-width: 744px) and (device-height: 1133px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" href="splash-1488x2266.jpg"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Glam Run</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--txt:#1e2a6b;--card:#fff;--ink:#1e2a6b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media(prefers-color-scheme:dark){:root:not([data-theme=light]){--txt:#fff;--card:#2b2170}}
@@ -183,11 +183,14 @@ body:not(.nt) #pu .gchip{display:none}
 /* fix schermi bassi (Android web-app, landscape): logo, titolo e bottoni scalano con l'altezza */
 #menu.scr{gap:min(12px,1.6vh)}
 #menu .avb{width:min(84px,13vh);height:min(84px,13vh);border-width:min(4px,.7vh);border-radius:min(22px,3.4vh)}
-#menu h1{font-size:min(64px,11vh);-webkit-text-stroke:min(4px,.7vh);text-shadow:0 min(6px,1vh) 0 #1e2a6b}
+#menu h1{font-size:min(64px,11vh);-webkit-text-stroke:.0625em #1e2a6b;paint-order:stroke fill;text-shadow:0 .09em 0 #1e2a6b;letter-spacing:.01em;font-synthesis:none}
 #menu .logo{width:min(88vw,340px);height:auto;max-height:24vh;object-fit:contain}
 #menu .btn:not(.sm){font-size:min(20px,4.6vh);padding:min(12px,1.8vh) 22px;min-width:min(190px,40vw)}
 #menu .pill{font-size:min(20px,4.4vh)}
 @media (max-height:520px) and (orientation:landscape){#menu h1 br{display:none}#menu h1{font-size:min(44px,10vh)}}
+/* Android in orizzontale: Gioca a sinistra, Negozio a destra */
+html.andl #menu>.btn:not(.sm):not(.b3):not(.ctb){position:absolute;left:max(16px,env(safe-area-inset-left,0px) + 6vw);bottom:calc(env(safe-area-inset-bottom,0px) + 24vh);min-width:min(220px,26vw);z-index:6}
+html.andl #menu>.btn.b3{position:absolute;right:max(16px,env(safe-area-inset-right,0px) + 6vw);bottom:calc(env(safe-area-inset-bottom,0px) + 24vh);min-width:min(220px,26vw);z-index:6}
 </style>
 
 <script>window.onerror=function(m,u,l,c){var d=document.getElementById('err');if(!d){d=document.createElement('div');d.id='err';d.style.cssText='position:fixed;left:0;right:0;bottom:0;z-index:99;background:#300;color:#fff;font:12px monospace;padding:8px;max-height:30%;overflow:auto;user-select:text';document.body.appendChild(d)}d.textContent+=m+' @'+l+':'+c+'\n'};</script>
@@ -318,6 +321,7 @@ const hpH=()=>{if(!document.querySelector('.hp'))for(const st of['height:100lvh'
 function rs(){const d=Math.min(devicePixelRatio||1,2),vv=window.visualViewport,w=Math.max(innerWidth,document.documentElement.clientWidth,vv?Math.round(vv.width):0),h=Math.max(innerHeight,document.documentElement.clientHeight,vv?Math.round(vv.height):0,...hpH()),og=GY,OV=140;DPR=d;cv.style.height=(h+OV)+'px';cv.width=Math.round(w*d);cv.height=Math.round((h+OV)*d);sc=Math.min(w/420,h/380);VW=w/sc;VH=h/sc;g.setTransform(sc*d,0,0,sc*d,0,0);g.imageSmoothingQuality='high';GY=VH*(mode=='menu'?.62:.7);if(og!=null&&(mode=='play'||mode=='pause'||mode=='end'))y+=GY-og}
 /* resize con debounce: evita che la scena "salti" mentre il browser mobile cambia la barra degli indirizzi */
 const rsl=()=>{clearTimeout(rt);rt=setTimeout(rs,80);setTimeout(rs,450)};addEventListener('resize',rsl);addEventListener('orientationchange',rsl);addEventListener('pageshow',rsl);if(window.visualViewport)visualViewport.addEventListener('resize',rsl);
+const andFix=()=>document.documentElement.classList.toggle('andl',/Android/i.test(navigator.userAgent)&&innerWidth>innerHeight);andFix();addEventListener('resize',andFix);addEventListener('orientationchange',()=>setTimeout(andFix,200));
 if(document.fonts&&document.fonts.load){document.fonts.load('700 16px Fredoka').then(()=>{try{rs()}catch(e){}}).catch(()=>{})}
 /* blocco rimbalzo (elastic scrolling) e zoom: si scorre solo dentro liste e mappe */
 document.addEventListener('touchmove',e=>{if(!(e.target.closest&&e.target.closest('.gw,.list,.mapw')))e.preventDefault()},{passive:false});
