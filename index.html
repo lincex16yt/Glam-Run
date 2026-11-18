@@ -896,9 +896,10 @@ function updCtl(){const nt=isNt(),ps=pt=='ps',k=$('#kh'),v=$('#nv');document.bod
  v.style.display='none'}
 function cyc(){S.ctl={auto:'on',on:'off',off:'auto'}[S.ctl||'auto'];save();updCtl()}
 function setInp(m){if(m!=inp){inp=m;updCtl();if(m=='touch')setFe(null);else if(!fe)defFe()}}
-const navEls=()=>{const s=document.querySelector('.scr.on');return s?[...s.querySelectorAll('button,input')].filter(b=>b.offsetParent&&!b.classList.contains('lk')):[]};
+const topScr=()=>document.querySelector('#st.on,#md.on')||document.querySelector('.scr.on');
+const navEls=()=>{const s=topScr();return s?[...s.querySelectorAll('button,input')].filter(b=>b.offsetParent&&!b.classList.contains('lk')):[]};
 function setFe(el){if(fe)fe.classList.remove('fk');fe=el||null;if(fe){fe.classList.add('fk');try{fe.scrollIntoView({block:'nearest',inline:'nearest'})}catch(e){}}}
-function defFe(){const s=document.querySelector('.scr.on');if(!s||inp=='touch'&&!isNt()){setFe(null);return}let el=null;
+function defFe(){const s=topScr();if(!s||inp=='touch'&&!isNt()){setFe(null);return}let el=null;
  if(s.id=='lv'||s.id=='wm'){el=s.querySelector('.mn.cur:not(.lk)')||[...s.querySelectorAll('.mn:not(.lk)')].pop()||null}
  else if(s.id=='sh')el=s.querySelector('#sl .btn');
  else el=s.querySelector('.btn:not(.mtn):not(.ctb)');
@@ -908,7 +909,7 @@ function move(dx,dy){const L=navEls();if(!L.length)return;if(!fe||!L.includes(fe
  for(const b of L){if(b==fe)continue;const r=b.getBoundingClientRect(),ex=r.left+r.width/2-cx,ey=r.top+r.height/2-cy2,p=dx?ex*dx:ey*dy,q=Math.abs(dx?ey:ex);if(p<=4)continue;const s=p+q*2.5;if(s<bsc){bsc=s;best=b}}
  if(best)setFe(best)}
 function act(){if(fe&&fe.offsetParent&&document.contains(fe)){if(fe.tagName=='INPUT')fe.focus();else fe.click()}else defFe()}
-function back(){const id=(document.querySelector('.scr.on')||{}).id;if(mode=='play')$('#pz').onclick();else if(mode=='pause'){mode='play';show('')}else if(id=='lv')wmap();else if(id=='rs'){if(LV>100)wmap();else lvls(wOf(LV))}else if(id=='wm'||id=='sh')menu()}
+function back(){const ov=document.querySelector('#st.on,#md.on');if(ov){ov.id=='st'?stClose():modClose();return}const id=(document.querySelector('.scr.on')||{}).id;if(mode=='play')$('#pz').onclick();else if(mode=='pause'){mode='play';show('')}else if(id=='lv')wmap();else if(id=='rs'){if(LV>100)wmap();else lvls(wOf(LV))}else if(id=='wm'||id=='sh')menu()}
 function onShow(id){updCtl();if(id==''||(inp=='touch'&&!isNt()))setFe(null);else defFe()}
 const _lvls=lvls,_wmap=wmap;lvls=function(w){_lvls(w);if(inp!='touch'||isNt())defFe()};wmap=function(){_wmap();if(inp!='touch'||isNt())defFe()};
 const _shop=shop;shop=function(t){const L=navEls(),i=(fe&&document.querySelector('#sh.on'))?L.indexOf(fe):-1;_shop(t);if(i>=0&&(inp!='touch'||isNt())){const N=navEls();setFe(N[Math.min(i,N.length-1)])}};
@@ -1038,8 +1039,8 @@ function modOff(){
  $('#mlogo').style.display='none';document.querySelector('#menu h1').style.display='';_av.src=AV0;_hv.src=HV0;$('#ver').innerHTML=VER0;
  try{localStorage.removeItem(MODKEY)}catch(e){}KV.del(MODKEY);save();modUi();toast('Gioco base ripristinato')}
 function modUi(){const a=[];if(MOD)a.push(MOD.name+' ('+MOD.version+')');if(XMOD)a.push(XMOD.name+' ('+XMOD.version+')');$('#mds').textContent=a.length?'Mod attiva: '+a.join(' + '):'Nessuna mod attiva: stai giocando al gioco base.';$('#mdr').style.display=a.length?'':'none'}
-function stOpen(){$('#st').classList.add('on')}
-function stClose(){$('#st').classList.remove('on')}
+function stOpen(){$('#st').classList.add('on');if(inp!='touch'||isNt())defFe()}
+function stClose(){$('#st').classList.remove('on');if(inp!='touch'||isNt())setFe(document.querySelector('#menu .setb'))}
 function stExport(){try{const d=new Date(),p=n=>('0'+n).slice(-2),nm='glam-run-salvataggio-'+d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate())+'.json',
  txt=JSON.stringify({game:'glam-run',format:1,saved:d.toISOString(),data:S},null,1),f=new File([txt],nm,{type:'application/json'});
  if(navigator.standalone&&navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f]}).then(()=>toast('Salvataggio pronto')).catch(e=>{if(e&&e.name!='AbortError')toast('Impossibile condividere il file')});return}
@@ -1052,8 +1053,8 @@ $('#stf').addEventListener('change',async e=>{const f=e.target.files&&e.target.f
   try{const old=localStorage.getItem('glam');if(old)localStorage.setItem('glam_prev',old)}catch(e2){}
   localStorage.setItem('glam',JSON.stringify(j));toast('Salvataggio caricato');sfx('win');setTimeout(()=>location.reload(),700)}
  catch(er){toast('Salvataggio non valido'+(typeof er=='string'?': '+er:''));sfx('hurt')}});
-function modOpen(){modUi();$('#md').classList.add('on')}
-function modClose(){$('#md').classList.remove('on')}
+function modOpen(){modUi();$('#md').classList.add('on');if(inp!='touch'||isNt())defFe()}
+function modClose(){$('#md').classList.remove('on');if(inp!='touch'||isNt())setFe(document.querySelector('#menu .modb'))}
 $('#modf').addEventListener('change',async e=>{const f=e.target.files&&e.target.files[0];e.target.value='';if(!f)return;
  try{if(f.size>2e9)throw'File troppo grande';const txt=await f.text(),d=new DOMParser().parseFromString(txt,'text/html'),sc=d.querySelector('script#glam-mod');if(!sc)throw'Questo file non è una mod';
   const m=JSON.parse(sc.textContent);modCheck(m);modApply(m);let kept=1;{const kk=m.atlas==null?MODKEYX:MODKEY;try{await KV.set(kk,JSON.stringify(m));try{localStorage.removeItem(kk)}catch(e){}}catch(er){try{localStorage.setItem(kk,JSON.stringify(m))}catch(er2){kept=0}}}
