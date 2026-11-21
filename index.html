@@ -1139,9 +1139,10 @@ document.body.insertAdjacentHTML('beforeend',`<style>#vs{padding:0;background:#3
 html.isand #menu.scr{gap:min(10px,2vh)}
 html.isand #menu::before{content:'';flex:1}
 html.isand #menu .avb{width:min(64px,15vh);height:min(64px,15vh)}
-html.isand #menu h1{font-size:min(84px,23vh);line-height:1}
+html.isand #menu.scr{padding-bottom:calc(env(safe-area-inset-bottom,0px) + 12px)}
+html.isand #menu h1{font-size:min(66px,18vh);line-height:1}
 html.isand #menu h1 br{display:none}
-html.isand #menu .logo{max-height:32vh;width:min(70vw,460px)}
+html.isand #menu .logo{max-height:26vh;width:min(60vw,380px)}
 }
 </style>
 <div class="scr" id="vl"><div class="panel"><h2>Multigiocatore</h2><div id="vl1"><input id="vln" class="cd" maxlength="12" placeholder="Il tuo nome" autocomplete="off"><p><button class="btn" id="vlc">Crea stanza</button></p><div class="cdrow"><input id="vli" class="cd" maxlength="4" placeholder="Codice stanza" autocomplete="off" autocapitalize="characters"><button class="btn sm b3" id="vlj" style="min-width:0">Entra</button></div><p><button class="btn b2" id="vlx">Indietro</button></p></div><div id="vl2" style="display:none"><div id="vlk"></div><div id="vlp"></div><p><button class="btn b3" id="vlg">Avvia partita</button></p><p><button class="btn b2" id="vlq">Esci dalla stanza</button></p></div><p id="vlm"></p><small>Fino a 4 giocatori. Usa ◀ ▶ per muoverti. Con Salta atterri sulla testa degli altri per colpirli, con Scivola spingi via chi è a terra. Attento a casse e buchi!</small></div></div>
