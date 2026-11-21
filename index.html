@@ -1136,8 +1136,8 @@ const VSCFG={debug:1,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{
 let VSM=0;const VC=['#ff2f7a','#ffc928','#2fcf6b','#37a9ff'],VS={H:560,WW:900,pr:null,cn:null,cons:[],names:[],host:0,my:0,code:'',P:[],L:null,raf:0,run:0,T:0,last:0,s:1,W:480,k:{l:0,r:0},jq:0,sq:0,over:0,cam:0,acc:0},vsE=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 document.body.insertAdjacentHTML('beforeend',`<style>#vs{padding:0;background:#3a74f5}#vs>*{position:absolute}#vl small{display:block;color:#5a5f8a;font-weight:600;line-height:1.3}#vl .panel p{margin:10px 0}#vln{margin-bottom:4px}.vp{display:flex;align-items:center;gap:8px;margin:6px 0;padding:6px 10px;border:3px solid #1e2a6b;border-radius:14px;background:#fff;color:#1e2a6b;font-weight:700;text-align:left}.vp i{width:16px;height:16px;border-radius:50%;border:2px solid #1e2a6b;flex:none}.vp.e{opacity:.45}.vp b{margin-left:auto;font-size:12px}#vl small{margin-top:8px}.vp{line-height:1.2}#vlk{font-size:34px;letter-spacing:6px;color:#ff2f7a;-webkit-text-stroke:1.5px #1e2a6b;paint-order:stroke fill;margin:4px 0}.vb{height:84px;font-size:30px;min-width:0;flex:1;touch-action:none;user-select:none;-webkit-user-select:none}/* [SOLO ANDROID ORIZZONTALE] home: logo grande e centrato, bottoni subito sotto */
 @media (orientation:landscape){
-html.isand #menu.scr{justify-content:center;gap:min(10px,2vh)}
-html.isand #menu>b{display:none}
+html.isand #menu.scr{gap:min(10px,2vh)}
+html.isand #menu::before{content:'';flex:1}
 html.isand #menu .avb{width:min(64px,15vh);height:min(64px,15vh)}
 html.isand #menu h1{font-size:min(84px,23vh);line-height:1}
 html.isand #menu h1 br{display:none}
