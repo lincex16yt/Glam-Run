@@ -153,6 +153,12 @@ body.nt .mapw{padding-bottom:56px}
 .dc svg,.sc svg{display:block}
 .sc{position:absolute;transform:translate(-50%,-50%);pointer-events:none;z-index:1;filter:drop-shadow(0 3px 0 rgba(0,0,0,.28))}
 .wl .ic2{margin:-2px 1px 0}
+#vkh{display:none;flex:1;margin:0 auto;align-items:center;justify-content:center;flex-wrap:wrap;gap:6px 8px;line-height:1.5;color:#fff;pointer-events:none}
+#vkh span{display:inline-flex;align-items:center;gap:3px;background:rgba(30,42,107,.8);border:2px solid #ffffff55;border-radius:999px;padding:4px 12px 4px 6px;font-size:14px;white-space:nowrap;text-shadow:none;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+#vkh b{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:28px;padding:0 7px;margin:0 1px 3px;font-size:14px;color:#1e2a6b;background:linear-gradient(#fff,#dfe4ff);border:2px solid #1e2a6b;border-radius:9px;box-shadow:0 3px 0 #1e2a6b}
+body.nt #vsk{pointer-events:none}
+body.nt #vsk .btn{display:none}
+body.nt #vsk #vkh{display:flex}
 #kh{background:none;border:0;padding:0;gap:8px;flex-wrap:wrap;justify-content:center}
 #kh span,#nv span{display:inline-flex;align-items:center;gap:3px;background:rgba(30,42,107,.8);border:2px solid #ffffff55;border-radius:999px;padding:4px 12px 4px 6px;font-size:14px;white-space:nowrap;text-shadow:none;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
 #nv span{margin:3px 4px}
@@ -213,6 +219,33 @@ body:not(.nt) #pu .gchip{display:none}
 :where(html.isand) #menu .btn:not(.sm){font-size:min(20px,4.6vh);padding:min(12px,1.8vh) 22px;min-width:min(190px,40vw)}
 :where(html.isand) #menu .pill{font-size:min(20px,4.4vh)}
 @media (max-height:520px) and (orientation:landscape){:where(html.isand) #menu h1 br{display:none}:where(html.isand) #menu h1{font-size:min(44px,10vh)}}
+/* [SOLO ANDROID ORIZZONTALE] negozio: skin a sinistra (3 per riga), anteprima col personaggio a destra */
+.shh{display:contents}#shp{display:none}
+.it.sel{border-color:#ffd23f;box-shadow:0 0 0 3px #ffd23f99}
+@media (orientation:landscape){
+html.isand #sh.on{display:grid;grid-template-columns:auto auto minmax(0,1fr) min(36vw,300px);grid-template-rows:auto minmax(0,1fr) auto;column-gap:10px;row-gap:8px;align-items:center;justify-items:stretch;padding:calc(env(safe-area-inset-top,0px) + 8px) max(14px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 8px) max(14px,env(safe-area-inset-left,0px))}
+html.isand #sh h2{grid-area:1/1;margin:0;font-size:24px;text-align:left}
+html.isand #sh .pill{grid-area:1/2;font-size:16px;padding:2px 12px 2px 6px;justify-self:start}
+html.isand #sh .tabs{grid-area:1/3;justify-content:flex-start;flex-wrap:nowrap}
+html.isand #sh .tabs .btn{font-size:14px;padding:5px 10px;min-width:0}
+html.isand #sh #sl{grid-area:2/1/3/5;width:100%;align-self:stretch;padding:2px 2px 4px}
+html.isand #sh.sk #sl{grid-area:2/1/3/4;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:min-content;gap:8px;align-content:start}
+html.isand #sh .cdrow{grid-area:3/3;width:100%}
+html.isand #sh .cdrow .cd{padding:6px 10px;font-size:15px;min-width:0}
+html.isand #sh>.btn{grid-area:3/1/4/3;justify-self:start;min-width:0;font-size:16px;padding:6px 18px}
+html.isand #sh.sk .it{flex-direction:column;gap:2px;padding:6px 6px 8px;text-align:center;border-radius:16px;cursor:pointer}
+html.isand #sh.sk .it canvas{width:auto;height:min(78px,22vh);max-width:100%}
+html.isand #sh.sk .it .nf{flex:none;font-size:13px;line-height:1.1}
+html.isand #sh.sk .it .nf small,html.isand #sh.sk .it .nf br{display:none}
+html.isand #sh.sk .it .btn{width:100%;min-width:0;font-size:13px;padding:4px 6px}
+html.isand #sh.sk #shp{display:flex;grid-area:1/4/4/5;flex-direction:column;align-items:center;gap:4px;align-self:stretch;min-height:0;background:var(--card);border:3px solid var(--ink);border-radius:22px;padding:10px;text-align:center}
+html.isand #shpc{flex:1;min-height:0;width:100%;object-fit:contain}
+html.isand #shpn{font-size:20px}
+html.isand #shpd{font-size:12px;opacity:.8;line-height:1.2;max-height:3.6em;overflow:hidden}
+html.isand #shpb{min-width:0;width:100%;font-size:16px;padding:6px 10px}
+}
+/* logo delle mod (es. Hardcore) e avatar piu' piccoli in orizzontale: non coprono il personaggio */
+@media (max-height:640px) and (orientation:landscape){#menu .logo{max-height:19vh;margin-top:0}#menu .avb{width:min(84px,10vh);height:min(84px,10vh)}}
 /* [SOLO ANDROID] menu: bottoni vicini, monete solo nello shop, comandi in basso a destra, versione in basso a sinistra */
 :where(html.isand) #menu .pill{display:none}
 :where(html.isand) #menu>.btn:not(.sm){position:static}
@@ -233,7 +266,7 @@ body:not(.nt) #pu .gchip{display:none}
 <div class="scr" id="lv"><div class="mhead"><button class="btn sm" onclick="wmap()" style="min-width:0"><i data-ic="back" data-s="16"></i> Mappa</button><b id="lvt"></b><div class="pill"><i class="co"></i><span class="cn"></span></div></div><div class="mapw" id="lg"></div></div>
 <div class="scr" id="mc"><h2>Mod ufficiali</h2><small class="mcs">Mod precaricate e approvate dal creatore</small><div class="list" id="mcl"></div><button class="btn b2" onclick="mcClose()">Indietro</button></div>
 <div class="scr" id="afk"><div class="mhead"><button class="btn sm" onclick="wmap()" style="min-width:0"><i data-ic="back" data-s="16"></i> Mappa</button><b>Zona AFK</b><div class="pill"><i class="co"></i><span class="cn"></span></div></div><div class="afb"><div class="panel"><div class="afhw"><canvas id="afh" width="110" height="120"></canvas></div><div class="afbig"><b id="afc">0</b> monete in questa sessione</div><div class="afs"><span>Sessione <b id="afst">0:00</b></span><span>Totale <b id="aftt">0:00</b></span></div><small>Resta qui: ottieni 1 moneta ogni secondo.</small></div><div class="panel"><b id="afn"></b><div class="afbar"><i id="afbi"></i></div><small id="afnt"></small></div><div class="panel"><h2>Ruota della fortuna</h2><div id="afwt"></div><div class="afwheel"><div id="afwh"></div></div><button class="btn" id="afsb" onclick="afkSpinGo()">Gira!</button><div id="afr"></div><small>Una ruota ogni 10 minuti di AFK (max 3 in attesa). Monete, potenziamenti e, con probabilità bassissima, skin rare.</small></div></div></div>
-<div class="scr" id="sh"><h2>Negozio</h2><div class="pill"><i class="co"></i><span class="cn"></span></div><div class="tabs"><button class="btn sm" id="t1" onclick="shop(1)">Look</button><button class="btn sm" id="t2" onclick="shop(2)">Potenziamenti</button></div><div class="cdrow"><input id="cd" class="cd" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Scrivi il codice" maxlength="24"><button class="btn sm" onclick="redeem()" style="min-width:0">Sblocca</button></div><div class="list" id="sl"></div><button class="btn b2" onclick="menu()">Indietro</button></div>
+<div class="scr" id="sh"><div class="shh"><h2>Negozio</h2><div class="pill"><i class="co"></i><span class="cn"></span></div><div class="tabs"><button class="btn sm" id="t1" onclick="shop(1)">Look</button><button class="btn sm" id="t2" onclick="shop(2)">Potenziamenti</button></div><div class="cdrow"><input id="cd" class="cd" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Scrivi il codice" maxlength="24"><button class="btn sm" onclick="redeem()" style="min-width:0">Sblocca</button></div></div><div class="list" id="sl"></div><div id="shp"><canvas id="shpc" width="240" height="280"></canvas><b id="shpn"></b><small id="shpd"></small><button class="btn" id="shpb"></button></div><button class="btn b2" onclick="menu()">Indietro</button></div>
 <div class="scr" id="ps"><div class="panel"><h2>Pausa</h2><p><button class="btn sm mtn" onclick="tgl()" style="min-width:0"></button></p><p><button class="btn" onclick="mode='play';show('')">Riprendi</button></p><button class="btn b3" onclick="start(LV)">Ricomincia</button><p><button class="btn b2" onclick="menu()">Menu</button></p><p><button class="btn sm ctb" onclick="cyc()" style="min-width:0"></button></p></div></div>
 <div class="scr" id="rs"><div class="panel" id="rp"></div></div>
 <script>
@@ -825,7 +858,7 @@ function draw(){
    g.fillStyle='#1e2a6b';const w=R(T*40)*10;g.fillRect(sx-8-w/2,GY-90,18+w,3);g.fillRect(sx+54-w/2,GY-90,18+w,3)}}
  for(const c of co){if(c.t)continue;const sx=c.x-cam;if(sx>VW+20||sx<-20)continue;const w=Math.abs(CO(T*4+c.x*.05))*8+2,yy=GY-c.h;if(CIM&&rd(CIM)){const hh=34,fw=CIM.width/CIM.height*hh/2*(.22+.78*Math.abs(CO(T*4+c.x*.05)));g.drawImage(CIM,sx-fw,yy-hh/2,fw*2,hh)}else{g.fillStyle=CC.f;g.strokeStyle=CC.s;g.lineWidth=2;g.beginPath();g.ellipse(sx,yy,w,10,0,0,7);g.fill();g.stroke();g.fillStyle=CC.h;g.fillRect(sx-1,yy-6,2,8)}}
  if(LEN<1e8){const sx=LEN-cam;if(sx<VW+40){g.fillStyle='#1e2a6b';g.fillRect(sx,GY-170,7,170);g.fillStyle='#ff2fb4';g.beginPath();g.moveTo(sx+7,GY-170);g.lineTo(sx+60,GY-148);g.lineTo(sx+7,GY-126);g.fill();ci(g,sx+3,GY-174,7,'#ffc928')}}
- if(mode=='menu'){if(hm){bigHero(g,VW/2,GY+4,T,S.skin,Math.max(100,Math.min(250,GY-290)))}}
+ if(mode=='menu'){if(hm&&!(document.documentElement.classList.contains('isand')&&innerWidth>innerHeight)){bigHero(g,VW/2,GY+4,T,S.skin,Math.max(100,Math.min(250,GY-290)))}}
  else{
   for(const e of en)if(!e.d)drawEn(e);
   drawBul();
@@ -960,9 +993,15 @@ function wheelItem(){const l=wheelLeft();if(l){clearInterval(wbT);wbT=setInterva
  return `<div class="it"><div class="ic">${ic('wheel',46)}</div><div class="nf"><b>Giro della ruota</b><br><small>Un giro nella Zona AFK · acquistabile ogni 5 minuti</small></div><button class="btn sm ${l?'b2':''}" id="wbuy" onclick="buyWheel()">${l?fmt(l):`<i class="co"></i> ${WCOST}`}</button></div>`}
 function buyWheel(){const l=wheelLeft();if(l)return toast('Disponibile tra '+fmt(l));if(S.coins<WCOST)return toast('Monete insufficienti');S.coins-=WCOST;S.afk.sp=(S.afk.sp||0)+1;S.afk.bt=Date.now();save();sfx('win');toast('+1 giro della ruota! Lo trovi nella Zona AFK');shop(tab)}
 function toast(m){const t=$('#toast');t.textContent=m;t.style.opacity=1;clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.opacity=0,m.length>22?2600:1600)}
-function shop(t){if(t==1&&SKOFF())t=2;tab=t;show('sh');$('#t1').classList.toggle('b3',t==1);$('#t2').classList.toggle('b3',t==2);const el=$('#sl'),P=p=>`<i class="co"></i> ${p}`;
- if(t==1){el.innerHTML=SK.map((k,i)=>({k,i})).filter(o=>(!o.k.sec||S.own[o.i])).sort((a,b)=>(a.k.sec?1e9:0)+a.k.p-((b.k.sec?1e9:0)+b.k.p)).map(({k,i})=>`<div class="it"><canvas width="90" height="100" data-i="${i}"></canvas><div class="nf"><b>${k.n}</b>${i>3?' '+ic('sparkle',16):''}<br><small>${i==NI?(S.own[NI]?'Scia viola, doppio salto sempre attivo e Livello Segreto':'Si sblocca solo dopo aver comprato tutte le altre skin · oppure con un codice segreto'):i==GRI?'SEGRETA · doppio salto infinito e scintille rosa':i==CAI?'SEGRETA · magnete infinito e look smeraldo':'Pelliccia e abito glitter'}</small></div><button class="btn sm ${S.skin==i?'b2':''}" onclick="buy('s',${i})">${S.own[i]?(S.skin==i?'In uso':'Indossa'):P(k.p)}</button></div>`).join('');
-  const dr=()=>el.querySelectorAll('canvas').forEach(cn=>{const c=cn.getContext('2d');c.clearRect(0,0,90,100);c.save();c.translate(45,92);c.scale(1.3,1.3);hero(c,0,0,'idle',1.2,+cn.dataset.i,0);c.restore()});dr();setTimeout(()=>{if(tab==1&&$('#sh').classList.contains('on'))dr()},400)}
+let shSel=null,shRaf=0;
+const skDesc=i=>(i==NI?(S.own[NI]?'Scia viola, doppio salto sempre attivo e Livello Segreto':'Si sblocca solo dopo aver comprato tutte le altre skin · oppure con un codice segreto'):i==GRI?'SEGRETA · doppio salto infinito e scintille rosa':i==CAI?'SEGRETA · magnete infinito e look smeraldo':'Pelliccia e abito glitter');
+function shPick(i){shSel=i;document.querySelectorAll('#sl .it[data-i]').forEach(e=>e.classList.toggle('sel',+e.dataset.i==i));shPrev()}
+function shPrev(){const p=$('#shp'),k=SK[shSel];cancelAnimationFrame(shRaf);if(!p||!k||!p.offsetParent)return;
+ $('#shpn').textContent=k.n;$('#shpd').textContent=skDesc(shSel);const b=$('#shpb'),i=shSel;b.className='btn '+(S.skin==i?'b2':'');b.innerHTML=S.own[i]?(S.skin==i?'In uso':'Indossa'):`<i class="co"></i> ${k.p}`;b.onclick=()=>buy('s',i);
+ const c=$('#shpc').getContext('2d'),loop=t=>{if(!p.offsetParent||tab!=1||!$('#sh').classList.contains('on'))return;c.clearRect(0,0,240,280);c.save();c.translate(120,262);c.scale(2.7,2.7);hero(c,0,0,'idle',t/1000,shSel,0);c.restore();shRaf=requestAnimationFrame(loop)};shRaf=requestAnimationFrame(loop)}
+function shop(t){if(t==1&&SKOFF())t=2;const was=$('#sh').classList.contains('on');tab=t;show('sh');if(!was||shSel==null)shSel=S.skin;$('#sh').classList.toggle('sk',t==1);$('#t1').classList.toggle('b3',t==1);$('#t2').classList.toggle('b3',t==2);const el=$('#sl'),P=p=>`<i class="co"></i> ${p}`;
+ if(t==1){el.innerHTML=SK.map((k,i)=>({k,i})).filter(o=>(!o.k.sec||S.own[o.i])).sort((a,b)=>(a.k.sec?1e9:0)+a.k.p-((b.k.sec?1e9:0)+b.k.p)).map(({k,i})=>`<div class="it${i==shSel?' sel':''}" data-i="${i}" onclick="shPick(${i})"><canvas width="90" height="100" data-i="${i}"></canvas><div class="nf"><b>${k.n}</b>${i>3?' '+ic('sparkle',16):''}<br><small>${skDesc(i)}</small></div><button class="btn sm ${S.skin==i?'b2':''}" onclick="buy('s',${i})">${S.own[i]?(S.skin==i?'In uso':'Indossa'):P(k.p)}</button></div>`).join('');
+  const dr=()=>el.querySelectorAll('canvas').forEach(cn=>{const c=cn.getContext('2d');c.clearRect(0,0,90,100);c.save();c.translate(45,92);c.scale(1.3,1.3);hero(c,0,0,'idle',1.2,+cn.dataset.i,0);c.restore()});dr();shPrev();setTimeout(()=>{if(tab==1&&$('#sh').classList.contains('on'))dr()},400)}
  else if(t==3)codeTab(el);else el.innerHTML=UP.map((u,i)=>{const n=S.ut[u[0]],ban=HCM,inc=!ban&&((u[0]=='dj'&&(nt9()||rush()))||(u[0]=='mg'&&cat()));return `<div class="it"><div class="ic">${ic(u[5],46)}</div><div class="nf"><b>${u[1]}</b><br><small>${u[2]}</small></div><button class="btn sm ${n>0||inc||ban?'b2':''}" onclick="buy('u',${i})">${ban?'Vietato':inc?'Incluso':n>0?fmt(n):P(u[3])}</button></div>`}).join('')+wheelItem()}
 document.addEventListener('DOMContentLoaded',()=>{});
 function codeTab(el){el.innerHTML=`<div class="it" style="flex-direction:column;align-items:stretch;gap:10px;text-align:center"><div class="nf"><b>Hai un codice?</b><br><small>Scrivilo qui sotto per sbloccare una sorpresa</small></div><input id="cd" class="cd" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="Inserisci il codice" maxlength="24"><button class="btn sm" onclick="redeem()">Sblocca</button><small id="cdm">${[S.own[GRI]?'Skin segreta Glam Rush già sbloccata':'',S.own[CAI]?'Skin segreta Cataldia già sbloccata':'',S.own[NI]?'Skin Notte già sbloccata':'',S.gl?'Giorgioland già sbloccata':''].filter(Boolean).join(' · ')}</small></div>`;const i=$('#cd');i.addEventListener('keydown',e=>{if(e.key=='Enter'){e.preventDefault();redeem()}})}
@@ -993,18 +1032,19 @@ function updCtl(){const nt=isNt(),ps=pt=='ps',k=$('#kh'),v=$('#nv');document.bod
  if(inp=='pad'){k.innerHTML=`<span><b>${ps?'✕':'A'}</b> Salta</span><span><b>${ps?'○':'B'}</b><b>↓</b> Scivola</span>${rush()?`<span><b>${ps?'R1':'RB'}</b> Fantasma</span>`:''}<span><b>${ps?'Options':'Start'}</b> Pausa</span>`;v.innerHTML=`<span><b>D-pad</b> Muovi</span><span><b>${ps?'✕':'A'}</b> Conferma</span><span><b>${ps?'○':'B'}</b> Indietro</span>`}
  else{k.innerHTML=`<span><b>↑</b><b>W</b><b>Spazio</b> Salta</span><span><b>↓</b><b>S</b> Scivola</span>${rush()?'<span><b>G</b><b>E</b> Fantasma</span>':''}<span><b>P</b><b>Esc</b> Pausa</span><span><b>M</b> Suono</span>`;v.innerHTML=`<span><b>↑</b><b>↓</b><b>←</b><b>→</b> Muovi</span><span><b>Invio</b> Conferma</span><span><b>Esc</b> Indietro</span>`}
  document.querySelectorAll('.ctb').forEach(b=>b.innerHTML=ic('gamepad',20)+' Tasti touch: '+({auto:'Auto',on:'Sì',off:'No'}[S.ctl||'auto']));
- v.style.display='none'}
+ v.style.display='none';const vk=$('#vkh');if(vk)vk.innerHTML=inp=='pad'?`<span><b>${ps?'D-pad':'D-pad'}</b> Muovi</span><span><b>${ps?'✕':'A'}</b> Salta</span><span><b>${ps?'○':'B'}</b><b>↓</b> Scivola</span><span><b>${ps?'Options':'Start'}</b> Esci</span>`:`<span><b>←</b><b>→</b> Muovi</span><span><b>↑</b><b>W</b><b>Spazio</b> Salta</span><span><b>↓</b><b>S</b> Scivola</span><span><b>Esc</b> Esci</span>`}
 function cyc(){S.ctl={auto:'on',on:'off',off:'auto'}[S.ctl||'auto'];save();updCtl()}
 function setInp(m){if(m!=inp){inp=m;updCtl();if(m=='touch')setFe(null);else if(!fe)defFe()}}
 const topScr=()=>document.querySelector('#st.on,#md.on,#mc.on')||document.querySelector('.scr.on');
 const navEls=()=>{const s=topScr();return s?[...s.querySelectorAll('button,input')].filter(b=>b.offsetParent&&!b.classList.contains('lk')):[]};
-function setFe(el){if(fe)fe.classList.remove('fk');fe=el||null;if(fe){fe.classList.add('fk');try{fe.scrollIntoView({block:'nearest',inline:'nearest'})}catch(e){}}}
+function setFe(el){if(fe)fe.classList.remove('fk');fe=el||null;if(fe){fe.classList.add('fk');const it=fe.closest&&fe.closest('#sl .it[data-i]');if(it&&shSel!=+it.dataset.i)shPick(+it.dataset.i);try{fe.scrollIntoView({block:'nearest',inline:'nearest'})}catch(e){}}}
 function defFe(){const s=topScr();if(!s||inp=='touch'&&!isNt()){setFe(null);return}let el=null;
  if(s.id=='lv'||s.id=='wm'){el=s.querySelector('.mn.cur:not(.lk)')||[...s.querySelectorAll('.mn:not(.lk)')].pop()||null}
  else if(s.id=='afk')el=s.querySelector('#afsb');
  else if(s.id=='sh')el=s.querySelector('#sl .btn');
- else el=s.querySelector('.btn:not(.mtn):not(.ctb)');
- setFe(el||s.querySelector('button'))}
+ else if(s.id=='vs'){const o=$('#vso');setFe(o&&o.style.display!='none'?[...o.querySelectorAll('button')].find(b=>b.offsetParent)||null:null);return}
+ else el=[...s.querySelectorAll('.btn:not(.mtn):not(.ctb)')].find(b=>b.offsetParent)||null;
+ setFe(el||navEls()[0]||null)}
 function move(dx,dy){const L=navEls();if(!L.length)return;if(!fe||!L.includes(fe)){defFe();return}
  const a=fe.getBoundingClientRect(),cx=a.left+a.width/2,cy2=a.top+a.height/2;let best=null,bsc=1e9;
  for(const b of L){if(b==fe)continue;const r=b.getBoundingClientRect(),ex=r.left+r.width/2-cx,ey=r.top+r.height/2-cy2,p=dx?ex*dx:ey*dy,q=Math.abs(dx?ey:ex);if(p<=4)continue;const s=p+q*2.5;if(s<bsc){bsc=s;best=b}}
@@ -1017,7 +1057,7 @@ const _shop=shop;shop=function(t){const L=navEls(),i=(fe&&document.querySelector
 const hint1=()=>isNt()?(inp=='pad'?(pt=='ps'?'✕ per saltare, ○ per scivolare':'A per saltare, B per scivolare'):'Su / Spazio per saltare, Giù per scivolare'):'Tocca a destra per saltare, a sinistra per scivolare';
 Object.defineProperty(HINT,1,{get:hint1,configurable:true,enumerable:true});
 const KJ=[' ','ArrowUp','w','W','z','Z','Enter'],KS=['ArrowDown','s','S','x','X','Shift'],KGH=['g','G','e','E'],KG=KJ.concat(KS,KGH,['ArrowLeft','ArrowRight','a','A','d','D','Escape','Tab','p','P','m','M']);
-addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey||!KG.includes(e.key))return;if(typeof VS!='undefined'&&VS.run&&e.key!='m'&&e.key!='M')return;if(e.target&&e.target.tagName=='INPUT'){if(e.key=='Escape'||e.key=='ArrowUp'||e.key=='ArrowDown'){e.target.blur()}else return}const k=e.key;setInp('kb');e.preventDefault();
+addEventListener('keydown',e=>{if(e.ctrlKey||e.metaKey||e.altKey||!KG.includes(e.key))return;if(typeof VS!='undefined'&&VS.run&&!VS.over&&e.key!='m'&&e.key!='M')return;if(e.target&&e.target.tagName=='INPUT'){if(e.key=='Escape'||e.key=='ArrowUp'||e.key=='ArrowDown'){e.target.blur()}else return}const k=e.key;setInp('kb');e.preventDefault();
  if(k=='m'||k=='M'){if(!e.repeat)tgl();return}
  if(mode=='play'){if(e.repeat)return;if(KJ.includes(k))jump();else if(KS.includes(k))slide();else if(KGH.includes(k))ghost();else if(k=='Escape'||k=='p'||k=='P')back();const a=document.activeElement;if(a&&a!=document.body)a.blur();return}
  if(k=='Escape'||((k=='p'||k=='P')&&mode=='pause')){if(!e.repeat)back();return}
@@ -1033,7 +1073,8 @@ function padPoll(){const gs=navigator.getGamepads?navigator.getGamepads():[];let
  const E=k=>{if(!c[k]){return false}if(!pp[k]){ph[k]=now;plr[k]=now;return true}
   if(mode!='play'&&'udlr'.includes(k)&&now-ph[k]>380&&now-plr[k]>120){plr[k]=now;return true}return false};
  const eu=E('u'),ed=E('d'),el=E('l'),er=E('r'),ea=E('a'),eb=E('b'),ex=E('x'),ey=E('y'),elb=E('lb'),erb=E('rb'),es=E('st'),esel=E('sel');
- if(typeof VS!='undefined'&&VS.run){const K=VS.k,n=k=>c[k]&&!pp[k];if(!!c.l!=!!pp.l)K.l=c.l?1:0;if(!!c.r!=!!pp.r)K.r=c.r?1:0;if(n('a')||n('x')||n('u')||n('rb'))VS.jq=.12;if(n('b')||n('y')||n('d')||n('lb'))VS.sq=1;if(n('st')||n('sel'))vsQuit()}
+ if(typeof VS!='undefined'&&VS.run&&!VS.over){const K=VS.k,n=k=>c[k]&&!pp[k];if(!!c.l!=!!pp.l)K.l=c.l?1:0;if(!!c.r!=!!pp.r)K.r=c.r?1:0;if(n('a')||n('x')||n('u')||n('rb'))VS.jq=.12;if(n('b')||n('y')||n('d')||n('lb'))VS.sq=1;if(n('st')||n('sel'))vsQuit()}
+ else if(typeof VS!='undefined'&&VS.run&&VS.over&&(eb||es)){vsQuit()}
  else if(mode=='play'){if(ea||ex||eu||(erb&&!rush()))jump();if(erb&&rush())ghost();if(eb||ey||ed||elb)slide();if(es||esel)back()}
  else{if(eu)move(0,-1);if(ed)move(0,1);if(el)move(-1,0);if(er)move(1,0);if(ea)act();if(eb)back();if(es){if(mode=='pause')back();else act()}}
  pp=c}
@@ -1091,7 +1132,7 @@ const VSCFG={debug:1,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{
 let VSM=0;const VC=['#ff2f7a','#ffc928','#2fcf6b','#37a9ff'],VS={H:560,WW:900,pr:null,cn:null,cons:[],names:[],host:0,my:0,code:'',P:[],L:null,raf:0,run:0,T:0,last:0,s:1,W:480,k:{l:0,r:0},jq:0,sq:0,over:0,cam:0,acc:0},vsE=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 document.body.insertAdjacentHTML('beforeend',`<style>#vs{padding:0;background:#3a74f5}#vs>*{position:absolute}#vl small{display:block;color:#5a5f8a;font-weight:600;line-height:1.3}#vl .panel p{margin:10px 0}#vln{margin-bottom:4px}.vp{display:flex;align-items:center;gap:8px;margin:6px 0;padding:6px 10px;border:3px solid #1e2a6b;border-radius:14px;background:#fff;color:#1e2a6b;font-weight:700;text-align:left}.vp i{width:16px;height:16px;border-radius:50%;border:2px solid #1e2a6b;flex:none}.vp.e{opacity:.45}.vp b{margin-left:auto;font-size:12px}#vl small{margin-top:8px}.vp{line-height:1.2}#vlk{font-size:34px;letter-spacing:6px;color:#ff2f7a;-webkit-text-stroke:1.5px #1e2a6b;paint-order:stroke fill;margin:4px 0}.vb{height:84px;font-size:30px;min-width:0;flex:1;touch-action:none;user-select:none;-webkit-user-select:none}</style>
 <div class="scr" id="vl"><div class="panel"><h2>Multigiocatore</h2><div id="vl1"><input id="vln" class="cd" maxlength="12" placeholder="Il tuo nome" autocomplete="off"><p><button class="btn" id="vlc">Crea stanza</button></p><div class="cdrow"><input id="vli" class="cd" maxlength="4" placeholder="Codice stanza" autocomplete="off" autocapitalize="characters"><button class="btn sm b3" id="vlj" style="min-width:0">Entra</button></div><p><button class="btn b2" id="vlx">Indietro</button></p></div><div id="vl2" style="display:none"><div id="vlk"></div><div id="vlp"></div><p><button class="btn b3" id="vlg">Avvia partita</button></p><p><button class="btn b2" id="vlq">Esci dalla stanza</button></p></div><p id="vlm"></p><small>Fino a 4 giocatori. Usa ◀ ▶ per muoverti. Con Salta atterri sulla testa degli altri per colpirli, con Scivola spingi via chi è a terra. Attento a casse e buchi!</small></div></div>
-<div class="scr" id="vs"><canvas id="vsc" style="left:0;top:0;width:100%;height:100%"></canvas><button class="btn sm" id="vsq" style="left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 12px);min-width:0">Esci</button><div style="left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;gap:10px"><button class="btn vb" id="vsL">◀</button><button class="btn vb" id="vsR">▶</button><button class="btn b2 vb" id="vsS" style="flex:1.7;font-size:22px">Scivola</button><button class="btn vb" id="vsJ" style="flex:1.7;font-size:22px">Salta</button></div><div id="vso" class="panel" style="left:50%;top:40%;transform:translate(-50%,-50%);display:none"><h2 id="vst"></h2><p id="vsw"></p><p><button class="btn b3" id="vsr">Rivincita</button></p><p><button class="btn b2" id="vse">Esci</button></p></div></div>`);
+<div class="scr" id="vs"><canvas id="vsc" style="left:0;top:0;width:100%;height:100%"></canvas><button class="btn sm" id="vsq" style="left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 12px);min-width:0">Esci</button><div id="vsk" style="left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;gap:10px"><div id="vkh"></div><button class="btn vb" id="vsL">◀</button><button class="btn vb" id="vsR">▶</button><button class="btn b2 vb" id="vsS" style="flex:1.7;font-size:22px">Scivola</button><button class="btn vb" id="vsJ" style="flex:1.7;font-size:22px">Salta</button></div><div id="vso" class="panel" style="left:50%;top:40%;transform:translate(-50%,-50%);display:none"><h2 id="vst"></h2><p id="vsw"></p><p><button class="btn b3" id="vsr">Rivincita</button></p><p><button class="btn b2" id="vse">Esci</button></p></div></div>`);
 try{$('#vln').value=localStorage.getItem('glamNm')||''}catch(e){}
 const vsC=$('#vsc'),vg=vsC.getContext('2d'),vsMsgUi=m=>{$('#vlm').textContent=m},
 vsBc=(o,ex)=>{try{if(VS.host)VS.cons.forEach((c,i)=>{if(i&&i!=ex&&c&&c.open)c.send(o)});else VS.cn&&VS.cn.open&&VS.cn.send(o)}catch(e){}},
@@ -1140,7 +1181,7 @@ function vsHostStart(){if(!VS.host)return;const k=[];VS.cons.forEach((c,i)=>{if(
  if(VS.names.length<2)return toast('Servono almeno 2 giocatori');const seed=1+Math.random()*2e9|0,n=VS.names.length;vsBc({t:'start',seed,n});vsBegin(seed,n,0)}
 function vsBegin(seed,n,my){let q=seed||1;const r=()=>(q=q*16807%2147483647)/2147483647,pit=[215+r()*60,575+r()*60].map(x=>({x0:x,w:70})),cr=[{x:150+r()*20,h:36,w:34},{x:440+r()*30,h:36,w:34},{x:755+r()*25,h:36,w:34}],sp=[90,380,520,810];
  VS.L={pit,cr,sp};VS.my=my;VS.P=VS.names.slice(0,n).map((nm,i)=>({i,nm,x:sp[i],y:0,vy:0,d:i<2?1:-1,s:'i',hp:3,inv:0,hit:0,st:0,cd:0,kx:0,g:1,cy:0,f:0,tx:0,ty:0}));
- VS.over=0;VS.k.l=VS.k.r=0;VS.jq=VS.sq=0;VS.acc=0;VS.cam=Math.max(0,sp[my]-VS.W/2);VS.run=1;$('#vso').style.display='none';show('vs');VS.last=performance.now();cancelAnimationFrame(VS.raf);VS.raf=requestAnimationFrame(vsLoop)}
+ updCtl();VS.over=0;VS.k.l=VS.k.r=0;VS.jq=VS.sq=0;VS.acc=0;VS.cam=Math.max(0,sp[my]-VS.W/2);VS.run=1;$('#vso').style.display='none';show('vs');VS.last=performance.now();cancelAnimationFrame(VS.raf);VS.raf=requestAnimationFrame(vsLoop)}
 function vsEnd(w){VS.over=1;const p=VS.P[w];if(p)p.s='w';$('#vst').textContent=w==VS.my?'Hai vinto!':p?p.nm+' ha vinto!':'Pareggio';sfx(w==VS.my?'win':'lose');$('#vsr').style.display=VS.host?'':'none';$('#vsw').textContent=VS.host?'':'Aspetta che l\'host riavvii...';$('#vso').style.display=''}
 function vsGnd(L,x,y){for(const p of L.pit)if(x>p.x0+10&&x<p.x0+p.w-10)return null;for(const c of L.cr)if(Math.abs(x-c.x)<c.w/2+8&&y>=c.h-8)return c.h;return 0}
 function vsSt(){const m=VS.P[VS.my];if(m)vsBc({t:'p',i:VS.my,x:+m.x.toFixed(1),y:+m.y.toFixed(1),vy:m.vy|0,d:m.d,s:m.s,hp:m.hp,inv:+Math.max(0,m.inv).toFixed(2)})}
@@ -1187,8 +1228,9 @@ function vsLoop(t){if(!VS.run)return;VS.raf=requestAnimationFrame(vsLoop);const 
 $('#vlc').onclick=()=>vsCreate();$('#vlj').onclick=vsJoin;$('#vlx').onclick=()=>{vsClean();menu()};$('#vlq').onclick=vsOpen;$('#vlg').onclick=vsHostStart;$('#vsq').onclick=$('#vse').onclick=vsQuit;$('#vsr').onclick=vsHostStart;
 const vsHold=(id,key)=>{const b=$(id),on=e=>{e.preventDefault();VS.k[key]=1},off=e=>{e.preventDefault();VS.k[key]=0};b.onpointerdown=on;b.onpointerup=b.onpointercancel=b.onpointerleave=off;b.oncontextmenu=e=>e.preventDefault()};
 vsHold('#vsL','l');vsHold('#vsR','r');$('#vsJ').onpointerdown=e=>{e.preventDefault();VS.jq=.12};$('#vsS').onpointerdown=e=>{e.preventDefault();VS.sq=1};
-const vsKey=(e,dn)=>{if(!VS.run)return;const k=e.key,K=VS.k;let h=1;if(k=='ArrowLeft'||k=='a'||k=='A')K.l=dn;else if(k=='ArrowRight'||k=='d'||k=='D')K.r=dn;else if(k==' '||k=='ArrowUp'||k=='w'||k=='W'||k=='z'||k=='Z'||k=='Enter'){if(dn&&!e.repeat)VS.jq=.12}else if(k=='ArrowDown'||k=='s'||k=='S'||k=='x'||k=='X'||k=='Shift'){if(dn&&!e.repeat)VS.sq=1}else if(k=='Escape'){if(dn)vsQuit()}else h=0;if(h){e.preventDefault();e.stopImmediatePropagation();const a=document.activeElement;if(a&&a!=document.body)a.blur()}};
+const vsKey=(e,dn)=>{if(!VS.run)return;const k=e.key,K=VS.k;if(VS.over&&k!='Escape')return;let h=1;if(k=='ArrowLeft'||k=='a'||k=='A')K.l=dn;else if(k=='ArrowRight'||k=='d'||k=='D')K.r=dn;else if(k==' '||k=='ArrowUp'||k=='w'||k=='W'||k=='z'||k=='Z'||k=='Enter'){if(dn&&!e.repeat)VS.jq=.12}else if(k=='ArrowDown'||k=='s'||k=='S'||k=='x'||k=='X'||k=='Shift'){if(dn&&!e.repeat)VS.sq=1}else if(k=='Escape'){if(dn)vsQuit()}else h=0;if(h){setInp('kb');e.preventDefault();e.stopImmediatePropagation();const a=document.activeElement;if(a&&a!=document.body)a.blur()}};
 addEventListener('blur',()=>{VS.k.l=VS.k.r=0});
+const _vsEnd=vsEnd;vsEnd=function(w){_vsEnd(w);if(inp!='touch'||isNt())defFe()};
 addEventListener('keydown',e=>vsKey(e,1),true);addEventListener('keyup',e=>vsKey(e,0),true);
 
 const BOSS0=JSON.parse(JSON.stringify(BOSS)),MODKEYX='glamModX';let XMOD=null;
