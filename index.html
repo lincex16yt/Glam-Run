@@ -1114,6 +1114,7 @@ async function vsCreate(n){n=n||0;vsMsgUi('Connessione...');try{await vsLoad()}c
 function vsHostRx(c,m){if(!m)return;
  if(m.t=='hello'&&c._i==null){if(VS.run||VS.names.length>=4){try{c.send({t:'full',r:VS.run})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},400);return}
   c._i=VS.names.length;VS.names.push(String(m.n||'Giocatore').slice(0,12));VS.cons.push(c);vsLb()}
+ else if(m.t=='h'&&c._i!=null)vsHitRoute({to:m.to,fx:+m.fx||0});
  else if(m.t=='p'&&c._i!=null){const p=VS.P[c._i];if(p)vsApply(p,m);vsBc(Object.assign({},m,{i:c._i}),c._i)}}
 function vsHostDrop(c){const i=c._i;if(i==null)return;if(VS.run){const p=VS.P[i];if(p&&p.hp>0){p.hp=0;toast(p.nm+' ha lasciato la partita')}vsBc({t:'g',i})}else{VS.names.splice(i,1);VS.cons.splice(i,1);VS.cons.forEach((x,k)=>{if(x)x._i=k});vsLb()}c._i=null}
 async function vsJoin(){const code=$('#vli').value.trim().toUpperCase();if(code.length!=4)return vsMsgUi('Scrivi il codice di 4 lettere della stanza');vsMsgUi('Connessione...');try{await vsLoad()}catch(e){return vsMsgUi('Serve internet per giocare online')}vsClean();
@@ -1125,11 +1126,15 @@ async function vsJoin(){const code=$('#vli').value.trim().toUpperCase();if(code.
 function vsRecv(m){if(!m)return;
  if(m.t=='lobby'){VS.names=m.n;VS.my=m.you;vsLobby()}
  else if(m.t=='full'){vsClean();vsMsgUi(m.r?'Partita già iniziata, riprova dopo':'Stanza piena (massimo 4)')}
+ else if(m.t=='h')vsHitMe(+m.fx||0);
  else if(m.t=='start')vsBegin(m.seed,m.n,VS.my);
  else if(m.t=='p'&&m.i!=VS.my){const p=VS.P[m.i];if(p)vsApply(p,m)}
  else if(m.t=='g'){const p=VS.P[m.i];if(p&&p.hp>0){p.hp=0;toast(p.nm+' ha lasciato la partita')}}
  else if(m.t=='end')vsEnd(m.w)}
 function vsApply(p,m){if(m.hp<p.hp)sfx('stomp');if(!p.f){p.x=m.x;p.y=m.y;p.f=1}p.tx=m.x;p.ty=m.y;p.vy=m.vy;p.d=m.d;p.s=m.s;p.hp=m.hp;p.inv=m.inv}
+function vsHitMe(fx){const m=VS.P[VS.my];if(m&&m.hp>0&&m.inv<=0&&m.hit<=0&&!VS.over)vsHurt(m,fx)}
+function vsHitRoute(h){if(h.to==VS.my)vsHitMe(h.fx);else{const c=VS.cons[h.to];if(c&&c.open)try{c.send({t:'h',to:h.to,fx:h.fx})}catch(e){}}}
+function vsHit(to,fx){const h={t:'h',to,fx:+fx.toFixed(1)};if(VS.host)vsHitRoute(h);else try{VS.cn&&VS.cn.open&&VS.cn.send(h)}catch(e){}}
 function vsHostStart(){if(!VS.host)return;const k=[];VS.cons.forEach((c,i)=>{if(i==0||(c&&c.open))k.push(i)});VS.names=k.map(i=>VS.names[i]);VS.cons=k.map(i=>VS.cons[i]);VS.cons.forEach((c,i)=>{if(c)c._i=i});VS.cons.forEach((c,i)=>{if(i&&c)try{c.send({t:'lobby',n:VS.names,you:i})}catch(e){}});
  if(VS.names.length<2)return toast('Servono almeno 2 giocatori');const seed=1+Math.random()*2e9|0,n=VS.names.length;vsBc({t:'start',seed,n});vsBegin(seed,n,0)}
 function vsBegin(seed,n,my){let q=seed||1;const r=()=>(q=q*16807%2147483647)/2147483647,pit=[215+r()*60,575+r()*60].map(x=>({x0:x,w:70})),cr=[{x:150+r()*20,h:36,w:34},{x:440+r()*30,h:36,w:34},{x:755+r()*25,h:36,w:34}],sp=[90,380,520,810];
@@ -1137,7 +1142,7 @@ function vsBegin(seed,n,my){let q=seed||1;const r=()=>(q=q*16807%2147483647)/214
  VS.over=0;VS.k.l=VS.k.r=0;VS.jq=VS.sq=0;VS.acc=0;VS.cam=Math.max(0,sp[my]-VS.W/2);VS.run=1;$('#vso').style.display='none';show('vs');VS.last=performance.now();cancelAnimationFrame(VS.raf);VS.raf=requestAnimationFrame(vsLoop)}
 function vsEnd(w){VS.over=1;const p=VS.P[w];if(p)p.s='w';$('#vst').textContent=w==VS.my?'Hai vinto!':p?p.nm+' ha vinto!':'Pareggio';sfx(w==VS.my?'win':'lose');$('#vsr').style.display=VS.host?'':'none';$('#vsw').textContent=VS.host?'':'Aspetta che l\'host riavvii...';$('#vso').style.display=''}
 function vsGnd(L,x,y){for(const p of L.pit)if(x>p.x0+10&&x<p.x0+p.w-10)return null;for(const c of L.cr)if(Math.abs(x-c.x)<c.w/2+8&&y>=c.h-8)return c.h;return 0}
-function vsSt(){const m=VS.P[VS.my];if(m)vsBc({t:'p',x:+m.x.toFixed(1),y:+m.y.toFixed(1),vy:m.vy|0,d:m.d,s:m.s,hp:m.hp,inv:+Math.max(0,m.inv).toFixed(2)})}
+function vsSt(){const m=VS.P[VS.my];if(m)vsBc({t:'p',i:VS.my,x:+m.x.toFixed(1),y:+m.y.toFixed(1),vy:m.vy|0,d:m.d,s:m.s,hp:m.hp,inv:+Math.max(0,m.inv).toFixed(2)})}
 function vsHurt(m,fx){m.hp--;m.hit=.55;m.inv=1.3;m.st=0;m.kx=(m.x>=fx?1:-1)*240;m.vy=Math.max(m.vy,260);m.g=0;m.s='h';sfx('hurt');vsSt()}
 function vsLose(m){m.hp--;sfx('hurt');if(m.hp>0){m.x=VS.L.sp[m.i];m.y=60;m.vy=0;m.inv=1.8;m.hit=0;m.st=0;m.kx=0}else m.y=-300;vsSt()}
 function vsUpd(dt){const L=VS.L,m=VS.P[VS.my];
@@ -1153,9 +1158,11 @@ function vsUpd(dt){const L=VS.L,m=VS.P[VS.my];
   m.s=m.hit>0?'h':m.st>0?'s':!m.g?(m.vy>0?'j':'f'):Math.abs(vx)>5?'r':'i';
   if(m.y<-170)vsLose(m);
   else if(m.hp>0)for(const o of VS.P){if(o===m||o.hp<=0)continue;const dx=Math.abs(o.x-m.x),dy=o.y-m.y;
-   if(m.inv<=0&&m.hit<=0&&((o.s=='s'&&dx<48&&m.y<14&&o.y<14&&m.s!='s'&&(m.x-o.x)*o.d>-8)||(o.vy<-60&&dy>28&&dy<110&&dx<38)))vsHurt(m,o.x);
-   if(m.vy<-60&&dy<-28&&dy>-110&&dx<38&&o.inv<=0){m.vy=520;m.g=0;sfx('stomp')}}
-  VS.acc+=dt;if(VS.acc>.05){VS.acc=0;vsSt()}}
+   if(o.hc>0)o.hc-=dt;
+   if(m.hit<=0&&o.inv<=0&&!(o.hc>0)){
+    if(m.vy<-60&&dy<-28&&dy>-110&&dx<38){m.vy=520;m.g=0;m.cy=0;sfx('stomp');o.hc=.6;o.inv=1.3;vsHit(o.i,m.x)}
+    else if(m.s=='s'&&dx<48&&m.y<14&&o.y<14&&o.s!='s'&&(o.x-m.x)*m.d>-8){o.hc=.6;o.inv=1.3;vsHit(o.i,m.x)}}}
+  VS.acc+=dt;if(VS.acc>.035){VS.acc=0;vsSt()}}
  if(VS.host&&!VS.over){const al=VS.P.filter(p=>p.hp>0);if(al.length<=1){const w=al[0]?al[0].i:-1;vsBc({t:'end',w});vsEnd(w)}}}
 function vsDraw(){const c=vg,d=devicePixelRatio||1,s=VS.s,W=VS.W,H=VS.H,gy=H*.78,L=VS.L,me=VS.P[VS.my];c.setTransform(s*d,0,0,s*d,0,0);
  const gr=c.createLinearGradient(0,0,0,gy);gr.addColorStop(0,'#3a74f5');gr.addColorStop(1,'#9fd2ff');c.fillStyle=gr;c.fillRect(0,0,W,H);
