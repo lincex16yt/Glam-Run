@@ -1142,7 +1142,7 @@ const IMGOK=u=>typeof u=='string'&&/^data:image\/(png|jpeg|webp|gif);base64,[A-Z
 
 /* ===== MOD "Duello Online": 1 contro 1 con stanze. Salta = balzo sulla testa, Scivola = spazzata. Chi salta schiva la scivolata, chi scivola schiva il balzo ===== */
 const VSCFG={debug:1,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}],iceCandidatePoolSize:4}};
-let VSM=0;const VC=['#ff2f7a','#ffc928','#2fcf6b','#37a9ff'],VS={H:560,WW:900,pr:null,cn:null,cons:[],names:[],host:0,my:0,code:'',P:[],L:null,raf:0,run:0,T:0,last:0,s:1,W:480,k:{l:0,r:0},jq:0,sq:0,over:0,cam:0,acc:0},vsE=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
+let VSM=0;const VC=['#ff2f7a','#ffc928','#2fcf6b','#37a9ff','#a64dff','#ff8a1f'],VS={H:560,WW:900,pr:null,cn:null,cons:[],names:[],host:0,my:0,code:'',P:[],L:null,raf:0,run:0,T:0,last:0,s:1,W:480,k:{l:0,r:0},jq:0,sq:0,over:0,cam:0,acc:0},vsE=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 document.body.insertAdjacentHTML('beforeend',`<style>#vs{padding:0;background:#3a74f5}.btn:disabled{filter:grayscale(.85);opacity:.55;pointer-events:none}#vsn{display:block;margin-top:8px;color:#ff2fb4;font-weight:700}#vs>*{position:absolute}#vl small{display:block;color:#5a5f8a;font-weight:600;line-height:1.3}#vl .panel p{margin:10px 0}#vln{margin-bottom:4px}.vp{display:flex;align-items:center;gap:8px;margin:6px 0;padding:6px 10px;border:3px solid #1e2a6b;border-radius:14px;background:#fff;color:#1e2a6b;font-weight:700;text-align:left}.vp i{width:16px;height:16px;border-radius:50%;border:2px solid #1e2a6b;flex:none}.vp.e{opacity:.45}.vp b{margin-left:auto;font-size:12px}#vl small{margin-top:8px}.vp{line-height:1.2}#vlk{font-size:34px;letter-spacing:6px;color:#ff2f7a;-webkit-text-stroke:1.5px #1e2a6b;paint-order:stroke fill;margin:4px 0}.vb{height:84px;font-size:30px;min-width:0;flex:1;touch-action:none;user-select:none;-webkit-user-select:none}/* [SOLO ANDROID ORIZZONTALE] home: logo grande e centrato, bottoni subito sotto */
 @media (orientation:landscape){
 html.isand #menu.scr{gap:min(10px,2vh)}
@@ -1154,7 +1154,7 @@ html.isand #menu h1 br{display:none}
 html.isand #menu .logo{max-height:26vh;width:min(60vw,380px)}
 }
 </style>
-<div class="scr" id="vl"><div class="panel"><h2>Multigiocatore</h2><div id="vl1"><input id="vln" class="cd" maxlength="12" placeholder="Il tuo nome" autocomplete="off"><p><button class="btn" id="vlc">Crea stanza</button></p><div class="cdrow"><input id="vli" class="cd" maxlength="4" placeholder="Codice stanza" autocomplete="off" autocapitalize="characters"><button class="btn sm b3" id="vlj" style="min-width:0">Entra</button></div><p><button class="btn b2" id="vlx">Indietro</button></p></div><div id="vl2" style="display:none"><div id="vlk"></div><div id="vlp"></div><p><button class="btn b3" id="vlg">Avvia partita</button></p><p><button class="btn b2" id="vlq">Esci dalla stanza</button></p></div><p id="vlm"></p><small>Fino a 4 giocatori. Usa ◀ ▶ per muoverti. Con Salta atterri sulla testa degli altri per colpirli, con Scivola spingi via chi è a terra. Attento a casse e buchi!</small></div></div>
+<div class="scr" id="vl"><div class="panel"><h2>Multigiocatore</h2><div id="vl1"><input id="vln" class="cd" maxlength="12" placeholder="Il tuo nome" autocomplete="off"><p><button class="btn" id="vlc">Crea stanza</button></p><div class="cdrow"><input id="vli" class="cd" maxlength="4" placeholder="Codice stanza" autocomplete="off" autocapitalize="characters"><button class="btn sm b3" id="vlj" style="min-width:0">Entra</button></div><p><button class="btn b2" id="vlx">Indietro</button></p></div><div id="vl2" style="display:none"><div id="vlk"></div><div id="vlp"></div><p><button class="btn b3" id="vlg">Avvia partita</button></p><p><button class="btn b2" id="vlq">Esci dalla stanza</button></p></div><p id="vlm"></p><small>Fino a 6 giocatori. Usa ◀ ▶ per muoverti. Con Salta atterri sulla testa degli altri per colpirli, con Scivola spingi via chi è a terra. Attento a casse e buchi!</small></div></div>
 <div class="scr" id="vs"><canvas id="vsc" style="left:0;top:0;width:100%;height:100%"></canvas><button class="btn sm" id="vsq" style="left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 12px);min-width:0">Esci</button><div id="vsk" style="left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;gap:10px"><div id="vkh"></div><button class="btn vb" id="vsL">◀</button><button class="btn vb" id="vsR">▶</button><button class="btn b2 vb" id="vsS" style="flex:1.7;font-size:22px">Scivola</button><button class="btn vb" id="vsJ" style="flex:1.7;font-size:22px">Salta</button></div><div id="vso" class="panel" style="left:50%;top:40%;transform:translate(-50%,-50%);display:none"><h2 id="vst"></h2><p id="vsw"></p><p><button class="btn b3" id="vsr">Rivincita</button></p><p><button class="btn b2" id="vse">Esci</button></p></div></div>`);
 try{$('#vln').value=localStorage.getItem('glamNm')||''}catch(e){}
 const vsC=$('#vsc'),vg=vsC.getContext('2d'),vsMsgUi=m=>{$('#vlm').textContent=m},
@@ -1162,12 +1162,12 @@ vsBc=(o,ex)=>{try{if(VS.host)VS.cons.forEach((c,i)=>{if(i&&i!=ex&&c&&c.open)c.se
 vsNm=()=>{const n=($('#vln').value||'').trim().slice(0,12)||'Giocatore';try{localStorage.setItem('glamNm',n)}catch(e){}return n};
 function vsUi(){let b=$('#vsb');if(!b){b=[...document.querySelectorAll('#menu .btn')].find(x=>/^Gioca$/.test(x.textContent.trim()));if(!b)return;b.id='vsb';b.dataset.t=b.textContent;b.dataset.o=b.getAttribute('onclick')||''}
  if(VSM){b.textContent='Multigiocatore';b.onclick=vsOpen}else{b.textContent=b.dataset.t;b.onclick=null;b.setAttribute('onclick',b.dataset.o)}}
-function vsOpen(){if(!VSM)return;vsClean();$('#vl1').style.display='';$('#vl2').style.display='none';vsMsgUi('Gioca con un massimo di 3 amici: crea una stanza o entra con un codice.');show('vl')}
+function vsOpen(){if(!VSM)return;vsClean();$('#vl1').style.display='';$('#vl2').style.display='none';vsMsgUi('Gioca con un massimo di 5 amici: crea una stanza o entra con un codice.');show('vl')}
 function vsClean(){try{VS.cn&&VS.cn.close()}catch(e){}try{VS.pr&&VS.pr.destroy()}catch(e){}VS.cn=VS.pr=null;VS.host=0;VS.cons=[];VS.names=[];VS.run=0}
 function vsQuit(){cancelAnimationFrame(VS.raf);vsClean();menu()}
 function vsLoad(){return window.Peer?Promise.resolve():new Promise((res,rej)=>{const u=['https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js','https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];let i=0;const n=()=>{if(i>=u.length)return rej();const s=document.createElement('script');s.src=u[i++];s.onload=res;s.onerror=()=>{s.remove();n()};document.head.appendChild(s)};n()})}
 function vsLobby(){$('#vl1').style.display='none';$('#vl2').style.display='';$('#vlk').textContent=VS.code;
- $('#vlp').innerHTML=[0,1,2,3].map(i=>{const n=VS.names[i];return `<div class="vp${n?'':' e'}"><i style="background:${VC[i]}"></i>${n?vsE(n):'In attesa...'}${n&&i==VS.my?'<b>TU</b>':n&&i==0?'<b>HOST</b>':''}</div>`}).join('');
+ $('#vlp').innerHTML=[0,1,2,3,4,5].map(i=>{const n=VS.names[i];return `<div class="vp${n?'':' e'}"><i style="background:${VC[i]}"></i>${n?vsE(n):'In attesa...'}${n&&i==VS.my?'<b>TU</b>':n&&i==0?'<b>HOST</b>':''}</div>`}).join('');
  $('#vlg').style.display=VS.host?'':'none';$('#vlg').disabled=VS.names.length<2;
  vsMsgUi(VS.host?(VS.names.length<2?'Condividi il codice: servono almeno 2 giocatori.':'Premi Avvia partita quando siete pronti.'):'Connesso! Aspetta che l\'host avvii la partita.')}
 function vsLb(){VS.cons.forEach((c,k)=>{if(k&&c&&c.open)try{c.send({t:'lobby',n:VS.names,you:k})}catch(e){}});vsLobby()}
@@ -1177,7 +1177,7 @@ async function vsCreate(n){n=n||0;vsMsgUi('Connessione...');try{await vsLoad()}c
  pr.on('connection',c=>{c.on('data',m=>vsHostRx(c,m));c.on('close',()=>vsHostDrop(c))});
  pr.on('error',e=>{if(e.type=='unavailable-id'&&n<5)vsCreate(n+1);else vsMsgUi(e.type=='server-error'||e.type=='socket-error'||e.type=='socket-closed'?'Server non raggiungibile, riprova tra poco':'Errore di rete: '+e.type)})}
 function vsHostRx(c,m){if(!m)return;
- if(m.t=='hello'&&c._i==null){if(VS.run||VS.names.length>=4){try{c.send({t:'full',r:VS.run})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},400);return}
+ if(m.t=='hello'&&c._i==null){if(VS.run||VS.names.length>=6){try{c.send({t:'full',r:VS.run})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},400);return}
   c._i=VS.names.length;VS.names.push(String(m.n||'Giocatore').slice(0,12));VS.cons.push(c);vsLb()}
  else if(m.t=='h'&&c._i!=null)vsHitRoute({to:m.to,fx:+m.fx||0,k:m.k});
  else if(m.t=='p'&&c._i!=null){const p=VS.P[c._i];if(p)vsApply(p,m);vsBc(Object.assign({},m,{i:c._i}),c._i)}}
@@ -1190,7 +1190,7 @@ async function vsJoin(){const code=$('#vli').value.trim().toUpperCase();if(code.
  pr.on('error',e=>vsMsgUi(e.type=='peer-unavailable'?'Stanza non trovata':e.type=='server-error'||e.type=='socket-error'||e.type=='socket-closed'?'Server non raggiungibile, riprova tra poco':'Errore di rete: '+e.type))}
 function vsRecv(m){if(!m)return;
  if(m.t=='lobby'){VS.names=m.n;VS.my=m.you;vsLobby()}
- else if(m.t=='full'){vsClean();vsMsgUi(m.r?'Partita già iniziata, riprova dopo':'Stanza piena (massimo 4)')}
+ else if(m.t=='full'){vsClean();vsMsgUi(m.r?'Partita già iniziata, riprova dopo':'Stanza piena (massimo 6)')}
  else if(m.t=='h')vsHitMe(+m.fx||0,m.k);
  else if(m.t=='start')vsBegin(m.seed,m.n,VS.my,m.r,m.tie);
  else if(m.t=='p'&&m.i!=VS.my){const p=VS.P[m.i];if(p)vsApply(p,m)}
@@ -1202,14 +1202,26 @@ function vsHitRoute(h){if(h.to==VS.my)vsHitMe(h.fx,h.k);else{const c=VS.cons[h.t
 function vsHit(to,fx,k){const h={t:'h',to,fx:+fx.toFixed(1),k:k?1:0};if(VS.host)vsHitRoute(h);else try{VS.cn&&VS.cn.open&&VS.cn.send(h)}catch(e){}}
 function vsHostStart(){if(!VS.host)return;const k=[];VS.cons.forEach((c,i)=>{if(i==0||(c&&c.open))k.push(i)});VS.names=k.map(i=>VS.names[i]);VS.cons=k.map(i=>VS.cons[i]);VS.cons.forEach((c,i)=>{if(c)c._i=i});VS.cons.forEach((c,i)=>{if(i&&c)try{c.send({t:'lobby',n:VS.names,you:i})}catch(e){}});
  if(VS.names.length<2)return toast('Servono almeno 2 giocatori');const seed=1+Math.random()*2e9|0,n=VS.names.length;vsBc({t:'start',seed,n,r:0});vsBegin(seed,n,0,0)}
-const VM=[{n:'Prato Glam',th:0,pit:[[235,70],[595,70]],cr:[160,450,765]},{n:'Ghiaccio',th:3,pit:[[395,100]],cr:[150,270,610,740]},{n:'Vulcano',th:4,pit:[[190,60],[410,60],[650,60]],cr:[300,570,740]}];
+const VTH=[0,1,2,3,4,5,6,7,11,12];
+function vsRng(a){return()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function vsGen(seed,n){const r=vsRng(seed||1),ri=(a,b)=>a+(r()*(b-a+1)|0);
+ let ti=VTH[ri(0,VTH.length-1)];if(ti===VS.lt)ti=VTH[(VTH.indexOf(ti)+1+ri(0,VTH.length-2))%VTH.length];VS.lt=ti;
+ const ww=ri(900,1500)+(n>4?200:0),k=ri(1,Math.max(2,ww/330|0)),pit=[],seg=(ww-300)/k;
+ for(let q=0;q<k;q++){if(r()<.12)continue;const w=ri(55,115),x0=150+q*seg+ri(0,Math.max(0,seg-w-20));pit.push([x0|0,w])}
+ const cr=[],nc=ri(2,3+(ww/400|0));
+ for(let q=0,tr=0;q<nc&&tr<60;tr++){const x=ri(90,ww-90);if(pit.some(p=>x>p[0]-45&&x<p[0]+p[1]+45)||cr.some(c=>Math.abs(c-x)<110))continue;cr.push(x);q++}
+ cr.sort((a,b)=>a-b);
+ const sp=[],ok=x=>!pit.some(p=>x>p[0]-40&&x<p[0]+p[1]+40)&&!cr.some(c=>Math.abs(c-x)<60)&&!sp.some(c=>Math.abs(c-x)<55);
+ for(let q=0;q<n;q++){const b=ww*(q+.5)/n;let x=b;for(let d=0;d<400&&!ok(x);d+=10){x=b+(d%20?-1:1)*(1+(d>>1))*10;x=Math.max(40,Math.min(ww-40,x))}sp.push(x|0)}
+ for(let q=n-1;q>0;q--){const z=ri(0,q);[sp[q],sp[z]]=[sp[z],sp[q]]}
+ return{n:TH[ti].n,th:ti,pit,cr,sp,ww}}
 function vsLock(ids){VS.lk=performance.now()+3000;clearInterval(VS.li);const bs=ids.map(i=>$(i)),up=()=>{const r=Math.ceil((VS.lk-performance.now())/1e3);bs.forEach(b=>{b.disabled=r>0;b.textContent=r>0?'Esci ('+r+')':'Esci'});if(r<=0)clearInterval(VS.li)};up();VS.li=setInterval(up,200)}
 function vsTry(){const r=VS.lk-performance.now();if(r>0)return toast('Puoi uscire tra '+Math.ceil(r/1e3)+' s');vsQuit()}
 function vsNext(){if(!VS.host||!VS.run)return;const seed=1+Math.random()*2e9|0,n=VS.P.length,r=VS.sr.nx,tie=VS.sr.tie||null;vsBc({t:'start',seed,n,r,tie});vsBegin(seed,n,0,r,tie)}
-function vsBegin(seed,n,my,r,tie){r=r||0;const pr=VM[r<3?r:Math.abs(seed||0)%3],sp=[90,380,520,810];
- if(r==0||!VS.sr)VS.sr={w:[0,0,0,0]};VS.r=r;VS.tb=r>=3;clearInterval(VS.ci);
+function vsBegin(seed,n,my,r,tie){r=r||0;const pr=vsGen(seed,n),sp=pr.sp;VS.WW=pr.ww;
+ if(r==0||!VS.sr)VS.sr={w:[0,0,0,0,0,0]};VS.r=r;VS.tb=r>=3;clearInterval(VS.ci);
  VS.L={n:pr.n,th:TH[pr.th],pit:pr.pit.map(a=>({x0:a[0],w:a[1]})),cr:pr.cr.map(x=>({x,h:36,w:34})),sp};VS.my=my;
- VS.P=VS.names.slice(0,n).map((nm,i)=>({i,nm,x:sp[i],y:0,vy:0,d:i<2?1:-1,s:'i',hp:3,inv:0,hit:0,st:0,cd:0,kx:0,g:1,cy:0,f:0,tx:0,ty:0}));
+ VS.P=VS.names.slice(0,n).map((nm,i)=>({i,nm,x:sp[i],y:0,vy:0,d:sp[i]<pr.ww/2?1:-1,s:'i',hp:3,inv:0,hit:0,st:0,cd:0,kx:0,g:1,cy:0,f:0,tx:0,ty:0}));
  if(tie)VS.P.forEach(p=>{if(!tie.includes(p.i)){p.hp=0;p.y=-300}});
  updCtl();VS.over=0;VS.k.l=VS.k.r=0;VS.jq=VS.sq=0;VS.acc=0;VS.cam=Math.max(0,sp[my]-VS.W/2);VS.run=1;VS.sa=parseFloat(getComputedStyle(document.documentElement).paddingTop)||0;$('#vso').style.display='none';show('vs');vsLock(['#vsq']);toast(VS.tb?'Spareggio · '+pr.n:'Match '+(r+1)+'/3 · '+pr.n);VS.last=performance.now();cancelAnimationFrame(VS.raf);VS.raf=requestAnimationFrame(vsLoop)}
 function vsEnd(w){if(VS.over)return;VS.over=1;const sr=VS.sr,r=VS.r,n=VS.P.length,p=VS.P[w];if(p)p.s='w';if(w>=0)sr.w[w]++;
