@@ -1165,7 +1165,11 @@ vsNm=()=>{const n=($('#vln').value||'').trim().slice(0,12)||'Giocatore';try{loca
 function vsUi(){let b=$('#vsb');if(!b){b=[...document.querySelectorAll('#menu .btn')].find(x=>/^Gioca$/.test(x.textContent.trim()));if(!b)return;b.id='vsb';b.dataset.t=b.textContent;b.dataset.o=b.getAttribute('onclick')||''}
  if(VSM){b.textContent=TRM?'Torneo':'Multigiocatore';b.onclick=vsOpen}else{b.textContent=b.dataset.t;b.onclick=null;b.setAttribute('onclick',b.dataset.o)}trUi()}
 function vsOpen(){if(!VSM)return;vsClean();vsLoad().catch(()=>{});$('#vl1').style.display='';$('#vl2').style.display='none';vsMsgUi(TRM?'Torneo a eliminazione 1 contro 1: crea una stanza o entra con un codice.':'Gioca con un massimo di 5 amici: crea una stanza o entra con un codice.');show('vl')}
-function vsClean(){TR.pod=0;try{VS.cn&&VS.cn.close()}catch(e){}try{VS.pr&&VS.pr.destroy()}catch(e){}VS.cn=VS.pr=null;VS.host=0;VS.cons=[];VS.names=[];VS.run=0}
+function vsClean(){clearInterval(VS.ci);clearInterval(VS.li);clearInterval(VS.hb);VS.hb=0;TR={rd:[],ri:0,mi:0,gone:[],pod:0,pl:[],cur:null,t0:0,lm:null};try{VS.cn&&VS.cn.close()}catch(e){}try{VS.pr&&VS.pr.destroy()}catch(e){}VS.cn=VS.pr=null;VS.host=0;VS.cons=[];VS.names=[];VS.run=0;VS.over=0;VS.sr=null;VS.sl=null;['#vsq','#vse'].forEach(i=>{const b=$(i);if(b){b.disabled=false;b.textContent='Esci'}});const k=$('#vsk'),b1=$('#trb'),c1=$('#trc');if(k)k.classList.remove('trs');if(b1)b1.style.display='none';if(c1)c1.style.display='none'}
+/* battito: ogni 2 s host e ospiti si scambiano un ping; chi tace da troppo tempo viene considerato uscito (niente piu' partite bloccate da giocatori fantasma) */
+function vsGuestLost(c){if(VS.cn!==c)return;VS.cn=null;clearInterval(VS.hb);VS.hb=0;if(VS.run){toast('Host disconnesso');vsQuit()}else{$('#vl1').style.display='';$('#vl2').style.display='none';vsMsgUi('Connessione chiusa')}}
+function vsBeat(){const n=performance.now();try{if(VS.host){VS.cons.slice().forEach((c,i)=>{if(i&&c){if(c.open)try{c.send({t:'k'})}catch(e){}if(c._i!=null&&c._lt&&n-c._lt>10000){try{c.close()}catch(e){}vsHostDrop(c)}}})}
+ else{const c=VS.cn;if(c&&c.open){c.send({t:'k'});if(VS.hl&&n-VS.hl>12000){try{c.close()}catch(e){}vsGuestLost(c)}}}}catch(e){}}
 function vsQuit(){cancelAnimationFrame(VS.raf);vsClean();menu()}
 function vsLoad(){return window.Peer?Promise.resolve():new Promise((res,rej)=>{const u=['https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js','https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];let i=0;const n=()=>{if(i>=u.length)return rej();const s=document.createElement('script');s.src=u[i++];s.onload=res;s.onerror=()=>{s.remove();n()};document.head.appendChild(s)};n()})}
 function vsLobby(){$('#vl1').style.display='none';$('#vl2').style.display='';$('#vlk').textContent=VS.code;
@@ -1175,32 +1179,33 @@ function vsLobby(){$('#vl1').style.display='none';$('#vl2').style.display='';$('
 function vsLb(){VS.cons.forEach((c,k)=>{if(k&&c&&c.open)try{c.send({t:'lobby',n:VS.names,you:k})}catch(e){}});vsLobby()}
 async function vsCreate(n){n=n||0;vsMsgUi('Connessione...');try{await vsLoad()}catch(e){return vsMsgUi('Serve internet per giocare online')}vsClean();
  const code=Array.from({length:4},()=>'ABCDEFGHJKLMNPQRSTUVWXYZ'[Math.random()*24|0]).join(''),pr=VS.pr=new Peer('glamrun-'+code,VSCFG);VS.host=1;VS.code=code;VS.my=0;VS.names=[vsNm()];VS.cons=[null];
- setTimeout(()=>{if(VS.pr===pr&&!pr.open&&!pr.destroyed)vsMsgUi('Server non raggiungibile: controlla la connessione o riprova tra poco')},12000);pr.on('open',vsLobby);pr.on('disconnected',()=>{try{if(VS.pr===pr&&!pr.destroyed&&!VS.run)pr.reconnect()}catch(e){}});
+ setTimeout(()=>{if(VS.pr===pr&&!pr.open&&!pr.destroyed)vsMsgUi('Server non raggiungibile: controlla la connessione o riprova tra poco')},12000);pr.on('open',()=>{if(!VS.run)vsLobby()});pr.on('disconnected',()=>{try{if(VS.pr===pr&&!pr.destroyed)pr.reconnect()}catch(e){}});clearInterval(VS.hb);VS.hb=setInterval(vsBeat,2000);
  pr.on('connection',c=>{c.on('data',m=>vsHostRx(c,m));c.on('close',()=>vsHostDrop(c))});
  pr.on('error',e=>{if(e.type=='unavailable-id'&&n<5)vsCreate(n+1);else vsMsgUi(e.type=='server-error'||e.type=='socket-error'||e.type=='socket-closed'?'Server non raggiungibile, riprova tra poco':'Errore di rete: '+e.type)})}
-function vsHostRx(c,m){if(!m)return;
+function vsHostRx(c,m){c._lt=performance.now();if(!m||m.t=='k')return;
   if(Array.isArray(m)){if(c._i!=null&&m.length==7){const p=VS.P[c._i];if(p)vsApply(p,vsPos(m,0));vsBc([c._i].concat(m),c._i,1)}return}
- if(m.t=='hello'&&c._i==null){if(VS.run||VS.names.length>=6){try{c.send({t:'full',r:VS.run})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},400);return}
+ if(m.t=='hello'&&c._i==null){if((m.tm?1:0)!=(TRM?1:0)){try{c.send({t:'mode',tm:TRM?1:0})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},400);return}if(VS.run||VS.names.length>=6){try{c.send({t:'full',r:VS.run})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},400);return}
   c._i=VS.names.length;VS.names.push(String(m.n||'Giocatore').slice(0,12));VS.cons.push(c);vsLb()}
  else if(m.t=='h'&&c._i!=null)vsHitRoute({to:m.to,fx:+m.fx||0,k:m.k,fy:m.fy});
  else if(m.t=='p'&&c._i!=null){const p=VS.P[c._i];if(p)vsApply(p,m);vsBc(Object.assign({},m,{i:c._i}),c._i)}}
 function vsHostDrop(c){const i=c._i;if(i==null)return;if(VS.run){TR.gone[i]=1;const p=VS.P[i];if(p&&p.hp>0){p.hp=0;toast(p.nm+' ha lasciato la partita')}vsBc({t:'g',i})}else{VS.names.splice(i,1);VS.cons.splice(i,1);VS.cons.forEach((x,k)=>{if(x)x._i=k});vsLb()}c._i=null}
 async function vsJoin(){const code=$('#vli').value.trim().toUpperCase();if(code.length!=4)return vsMsgUi('Scrivi il codice di 4 lettere della stanza');vsMsgUi('Connessione...');try{await vsLoad()}catch(e){return vsMsgUi('Serve internet per giocare online')}vsClean();
   const pr=VS.pr=new Peer(VSCFG);VS.code=code;setTimeout(()=>{if(VS.pr===pr&&!pr.open&&!pr.destroyed)vsMsgUi('Server non raggiungibile: controlla la connessione o riprova tra poco')},12000);
-  const mk=att=>{if(VS.pr!==pr||pr.destroyed)return;const c=VS.cn=pr.connect('glamrun-'+code,{reliable:true});
-   c.on('open',()=>{c.send({t:'hello',n:vsNm()});vsMsgUi('Connesso, entro nella stanza...')});c.on('data',vsRecv);c.on('error',e=>{if(!VS.run)vsMsgUi('Errore di connessione: '+(e&&e.type||e))});
+  let dead=0,started=0;const mk=att=>{if(dead||VS.pr!==pr||pr.destroyed)return;const c=VS.cn=pr.connect('glamrun-'+code,{reliable:true});
+   c.on('open',()=>{c.send({t:'hello',n:vsNm(),tm:TRM?1:0});VS.hl=performance.now();clearInterval(VS.hb);VS.hb=setInterval(vsBeat,2000);vsMsgUi('Connesso, entro nella stanza...')});c.on('data',vsRecv);c.on('error',e=>{if(!VS.run)vsMsgUi('Errore di connessione: '+(e&&e.type||e))});
    c.on('iceStateChanged',st=>{if(st=='failed'&&VS.cn===c&&!c.open)vsMsgUi('Percorso diretto bloccato dalla rete, riprovo...')});
-   c.on('close',()=>{if(VS.cn===c){VS.cn=null;if(VS.run){toast('Host disconnesso');vsQuit()}else{$('#vl1').style.display='';$('#vl2').style.display='none';vsMsgUi('Connessione chiusa')}}});
+   c.on('close',()=>vsGuestLost(c));
    vsMsgUi(att?'Nuovo tentativo '+(att+1)+'/3...':'Connessione alla stanza...');
-   setTimeout(()=>{if(!VS.run&&!c.open&&VS.cn===c){VS.cn=null;try{c.close()}catch(e){}if(att<2)mk(att+1);else vsMsgUi('Impossibile entrare: controlla il codice o prova con un\'altra rete')}},att?14000:12000)};
-  pr.on('open',()=>mk(0));
-  pr.on('error',e=>vsMsgUi(e.type=='peer-unavailable'?'Stanza non trovata':e.type=='server-error'||e.type=='socket-error'||e.type=='socket-closed'?'Server non raggiungibile, riprova tra poco':'Errore di rete: '+e.type))}
- function vsRecv(m){if(!m)return;
+   setTimeout(()=>{if(!dead&&!VS.run&&!c.open&&VS.cn===c){VS.cn=null;try{c.close()}catch(e){}if(att<2)mk(att+1);else vsMsgUi('Impossibile entrare: controlla il codice o prova con un\'altra rete')}},att?14000:12000)};
+  pr.on('open',()=>{if(started)return;started=1;mk(0)});pr.on('disconnected',()=>{try{if(VS.pr===pr&&!pr.destroyed)pr.reconnect()}catch(e){}});
+  pr.on('error',e=>{if(e.type=='peer-unavailable'){dead=1;try{VS.cn&&VS.cn.close()}catch(x){}VS.cn=null}vsMsgUi(e.type=='peer-unavailable'?'Stanza non trovata':e.type=='server-error'||e.type=='socket-error'||e.type=='socket-closed'?'Server non raggiungibile, riprova tra poco':'Errore di rete: '+e.type)})}
+ function vsRecv(m){VS.hl=performance.now();if(!m||m.t=='k')return;
   if(Array.isArray(m)){if(m.length==8&&m[0]!=VS.my){const p=VS.P[m[0]];if(p)vsApply(p,vsPos(m,1))}return}
  if(m.t=='lobby'){VS.names=m.n;VS.my=m.you;vsLobby()}
  else if(m.t=='full'){vsClean();vsMsgUi(m.r?'Partita già iniziata, riprova dopo':'Stanza piena (massimo 6)')}
+ else if(m.t=='mode'){vsClean();vsMsgUi(m.tm?'Questa stanza è un Torneo: attiva la mod Torneo Online per entrare':'Questa stanza è un Duello: attiva la mod Duello Online per entrare')}
  else if(m.t=='h')vsHitMe(+m.fx||0,m.k,m.fy);
- else if(m.t=='start')vsBegin(m.seed,m.n,VS.my,m.r,m.tie);
+ else if(m.t=='start')vsBegin(m.seed,m.n,VS.my,m.r,m.tie,m.g);
  else if(m.t=='p'&&m.i!=VS.my){const p=VS.P[m.i];if(p)vsApply(p,m)}
  else if(m.t=='g'){const p=VS.P[m.i];if(p&&p.hp>0){p.hp=0;toast(p.nm+' ha lasciato la partita')}}
  else if(m.t=='tstart')trBegin(m)
@@ -1228,12 +1233,13 @@ function vsGen(seed,n){const r=vsRng(seed||1),ri=(a,b)=>a+(r()*(b-a+1)|0);
  return{n:TH[ti].n,th:ti,pit,cr,sp,ww}}
 function vsLock(ids){VS.lk=performance.now()+3000;clearInterval(VS.li);const bs=ids.map(i=>$(i)),up=()=>{const r=Math.ceil((VS.lk-performance.now())/1e3);bs.forEach(b=>{b.disabled=r>0;b.textContent=r>0?'Esci ('+r+')':'Esci'});if(r<=0)clearInterval(VS.li)};up();VS.li=setInterval(up,200)}
 function vsTry(){const r=VS.lk-performance.now();if(r>0)return toast('Puoi uscire tra '+Math.ceil(r/1e3)+' s');vsQuit()}
-function vsNext(){if(!VS.host||!VS.run)return;const seed=1+Math.random()*2e9|0,n=VS.P.length,r=VS.sr.nx,tie=VS.sr.tie||null;vsBc({t:'start',seed,n,r,tie});vsBegin(seed,n,0,r,tie)}
-function vsBegin(seed,n,my,r,tie){r=r||0;const T2=TRM&&tie,pr=vsGen(seed,T2?2:n),sp=T2?VS.names.slice(0,n).map((_,i)=>pr.sp[Math.max(0,tie.indexOf(i))]):pr.sp;VS.WW=pr.ww;
+function vsNext(){if(!VS.host||!VS.run)return;const seed=1+Math.random()*2e9|0,n=VS.P.length,r=VS.sr.nx,tie=VS.sr.tie||null,g=[];VS.cons.forEach((c,i)=>{if(i&&!(c&&c.open))g.push(i)});vsBc({t:'start',seed,n,r,tie,g});vsBegin(seed,n,0,r,tie,g)}
+function vsBegin(seed,n,my,r,tie,g){r=r||0;const T2=TRM&&tie,pr=vsGen(seed,T2?2:n),sp=T2?VS.names.slice(0,n).map((_,i)=>pr.sp[Math.max(0,tie.indexOf(i))]):pr.sp;VS.WW=pr.ww;
  if(r==0||!VS.sr)VS.sr={w:[0,0,0,0,0,0]};VS.r=r;VS.tb=r>=3;clearInterval(VS.ci);
  VS.L={n:pr.n,th:TH[pr.th],pit:TRM?[]:pr.pit.map(a=>({x0:a[0],w:a[1]})),cr:TRM?[]:pr.cr.map(x=>({x,h:36,w:34})),sp};VS.my=my;
  VS.P=VS.names.slice(0,n).map((nm,i)=>({i,nm,x:sp[i],y:0,vy:0,d:sp[i]<pr.ww/2?1:-1,s:'i',hp:3,inv:0,hit:0,st:0,cd:0,kx:0,g:1,cy:0,f:0,tx:0,ty:0}));
  if(tie)VS.P.forEach(p=>{if(!tie.includes(p.i)){p.hp=0;p.y=-300}});
+ if(g)g.forEach(i=>{const p=VS.P[i];if(p){p.hp=0;p.y=-300}});
  updCtl();VS.over=0;VS.k.l=VS.k.r=0;VS.jq=VS.sq=0;VS.acc=0;VS.sl=null;VS.cam=Math.max(0,sp[my]-VS.W/2);VS.run=1;VS.sa=parseFloat(getComputedStyle(document.documentElement).paddingTop)||0;$('#vso').style.display='none';show('vs');vsLock(['#vsq']);toast(TRM?trLbl()+' · '+pr.n:VS.tb?'Spareggio · '+pr.n:'Match '+(r+1)+'/3 · '+pr.n);VS.last=performance.now();cancelAnimationFrame(VS.raf);VS.raf=requestAnimationFrame(vsLoop)}
 function vsEnd(w){if(VS.over)return;VS.over=1;const sr=VS.sr,r=VS.r,n=VS.P.length,p=VS.P[w];if(p)p.s='w';if(w>=0)sr.w[w]++;
  let fin=0,ch=-1,nx=0;if(r>=2){const W=sr.w.slice(0,n),mx=Math.max(...W),ld=[];W.forEach((x,i)=>x==mx&&ld.push(i));if(r>=3){fin=1;ch=w}else if(ld.length==1){fin=1;ch=ld[0]}else{nx=3;sr.tie=ld}}else nx=r+1;
@@ -1326,20 +1332,20 @@ function trMk(p){const n=p.length;let B=1;while(B<n)B*=2;const m=n-B/2,ms=[];for
 const trSnap=()=>({rd:TR.rd,ri:TR.ri,mi:TR.mi,lm:TR.lm,pl:TR.pl});
 function trHostStart(){const ids=VS.names.map((_,i)=>i);for(let i=ids.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[ids[i],ids[j]]=[ids[j],ids[i]]}
  TR={rd:[],ri:0,mi:0,gone:[],pod:0,pl:[],cur:null,t0:0,lm:null};trMk(ids);trGo()}
-function trGo(){const R=TR.rd[TR.ri],mi=R.ms.findIndex(x=>x.w<0);
+function trGo(){const R=TR.rd[TR.ri];if(!R)return;const mi=R.ms.findIndex(x=>x.w<0);
  if(mi<0){const pool=R.ms.map(x=>x.w);if(pool.length==1)return trFin();trMk(pool);TR.ri++;return trGo()}
  const x=R.ms[mi];TR.mi=mi;const ga=TR.gone[x.a],gb=TR.gone[x.b];
  if(ga||gb){x.w=ga&&!gb?x.b:x.a;x.h=0;return trGo()}
  const m={t:'tstart',seed:1+Math.random()*2e9|0,n:VS.names.length,a:x.a,b:x.b,s:trSnap()};vsBc(m);trBegin(m)}
 function trBegin(m){TR.pod=0;TR.cur=[m.a,m.b];trSt(m.s,0);$('#trb').style.display=$('#trc').style.display='none';vsBegin(m.seed,m.n,VS.my,0,[m.a,m.b]);TR.t0=VS.T;$('#vsk').classList.toggle('trs',VS.my!=m.a&&VS.my!=m.b)}
 function trEnd(w){if(VS.over)return;VS.over=1;const p=VS.P[w];if(p)p.s='w';sfx(w==VS.my?'win':'lose');if(!VS.host)return;
- const x=TR.rd[TR.ri].ms[TR.mi];if(w<0)w=x.a;x.w=w;x.h=p?Math.max(0,p.hp):0;TR.lm=[w,w==x.a?x.b:x.a];const s=trSnap();vsBc({t:'tr',ev:'m',s});trSt(s,'m')}
+ const x=TR.rd[TR.ri]&&TR.rd[TR.ri].ms[TR.mi];if(!x)return;if(w<0)w=x.a;const q=VS.P[w];x.w=w;x.h=q?Math.max(0,q.hp):0;TR.lm=[w,w==x.a?x.b:x.a];const s=trSnap();vsBc({t:'tr',ev:'m',s});trSt(s,'m')}
 function trFin(){const o=[];TR.rd.forEach((R,r)=>R.ms.forEach(x=>{if(x.b!=-2)o.push({i:x.w==x.a?x.b:x.a,r,d:3-x.h})}));o.sort((a,b)=>b.r-a.r||b.d-a.d);
  const L=TR.rd[TR.rd.length-1].ms[0];TR.pl=[L.w,...o.map(q=>q.i)];const s=trSnap();vsBc({t:'tr',ev:'f',s});trSt(s,'f')}
 function trSt(s,ev){TR.rd=s.rd;TR.ri=s.ri;TR.mi=s.mi;TR.lm=s.lm;TR.pl=s.pl||[];
  if(ev=='m'){const lm=TR.lm||[-1,-1],me=VS.my;$('#vst').textContent=lm[0]==me?'Hai vinto il match!':lm[1]==me?'Sei eliminato':(VS.names[lm[0]]||'?')+' avanza';
   $('#vsw').innerHTML=trBr()+'<span id="vsn"></span>';$('#vsr').style.display='none';$('#vso').style.display='';vsLock(['#vsq','#vse']);
-  clearInterval(VS.ci);let c=5;const sh=()=>{const e=$('#vsn');if(e)e.textContent='Prossimo match tra '+c+' s'};sh();VS.ci=setInterval(()=>{c--;if(c<=0){clearInterval(VS.ci);if(VS.host)trGo()}else sh()},1000);if(inp!='touch'||isNt())defFe()}
+  clearInterval(VS.ci);let c=5;const sh=()=>{const e=$('#vsn');if(e)e.textContent='Prossimo match tra '+c+' s'};sh();VS.ci=setInterval(()=>{c--;if(c<=0){clearInterval(VS.ci);if(VS.host&&VS.run&&TRM)trGo()}else sh()},1000);if(inp!='touch'||isNt())defFe()}
  else if(ev=='f'){TR.pod=1;VS.over=1;clearInterval(VS.ci);$('#vso').style.display='none';$('#vsk').classList.add('trs');$('#trb').style.display='flex';$('#trr').style.display=VS.host?'':'none';sfx('win')}}
 function trBr(){const nm=(x,i)=>`<span class="${x.w==i?'trw':x.w>=0?'trl':''}"><i style="background:${VC[i]}"></i>${vsE(VS.names[i]||'?')}</span>`;
  return TR.rd.map(R=>'<div class="trh">'+R.nm+'</div>'+R.ms.map(x=>x.b==-2?`<div class="trm">${nm(x,x.a)}<em>passa il turno</em></div>`:`<div class="trm${x.w<0?' trn':''}">${nm(x,x.a)}<em>vs</em>${nm(x,x.b)}</div>`).join('')).join('')}
