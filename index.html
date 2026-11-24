@@ -1141,7 +1141,9 @@ const AUOK=u=>typeof u=='string'&&u.length<3e8&&/^data:audio\/(mpeg|mp3|ogg|wav|
 const IMGOK=u=>typeof u=='string'&&/^data:image\/(png|jpeg|webp|gif);base64,[A-Za-z0-9+\/=]+$/.test(u);
 
 /* ===== MOD "Duello Online": 1 contro 1 con stanze. Salta = balzo sulla testa, Scivola = spazzata. Chi salta schiva la scivolata, chi scivola schiva il balzo ===== */
-const VSCFG={debug:1,config:{iceServers:[{urls:'stun:stun.l.google.com:19302'},{urls:'stun:stun1.l.google.com:19302'},{urls:'stun:global.stun.twilio.com:3478'},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}],iceCandidatePoolSize:4}};
+/* Per connessioni sicure tra reti diverse (4G/5G, CGNAT) incolla qui un tuo server TURN, es. {urls:['turn:...','turns:...:443?transport=tcp'],username:'...',credential:'...'} (account gratuito su metered.ca) */
+const VSTURN=[];
+const VSCFG={debug:1,config:{iceServers:[...VSTURN,{urls:['stun:stun.l.google.com:19302','stun:stun1.l.google.com:19302','stun:stun.cloudflare.com:3478']},{urls:['turn:openrelay.metered.ca:80','turn:openrelay.metered.ca:443','turn:openrelay.metered.ca:80?transport=tcp','turn:openrelay.metered.ca:443?transport=tcp','turns:openrelay.metered.ca:443?transport=tcp'],username:'openrelayproject',credential:'openrelayproject'}],iceCandidatePoolSize:4}};
 let VSM=0;const VC=['#ff2f7a','#ffc928','#2fcf6b','#37a9ff','#a64dff','#ff8a1f'],VS={H:560,WW:900,pr:null,cn:null,cons:[],names:[],host:0,my:0,code:'',P:[],L:null,raf:0,run:0,T:0,last:0,s:1,W:480,k:{l:0,r:0},jq:0,sq:0,over:0,cam:0,acc:0},vsE=s=>String(s).replace(/[&<>"']/g,c=>'&#'+c.charCodeAt(0)+';');
 document.body.insertAdjacentHTML('beforeend',`<style>#vs{padding:0;background:#3a74f5}.btn:disabled{filter:grayscale(.85);opacity:.55;pointer-events:none}#vsn{display:block;margin-top:8px;color:#ff2fb4;font-weight:700}#vs>*{position:absolute}#vl small{display:block;color:#5a5f8a;font-weight:600;line-height:1.3}#vl .panel p{margin:10px 0}#vln{margin-bottom:4px}.vp{display:flex;align-items:center;gap:8px;margin:6px 0;padding:6px 10px;border:3px solid #1e2a6b;border-radius:14px;background:#fff;color:#1e2a6b;font-weight:700;text-align:left}.vp i{width:16px;height:16px;border-radius:50%;border:2px solid #1e2a6b;flex:none}.vp.e{opacity:.45}.vp b{margin-left:auto;font-size:12px}#vl small{margin-top:8px}.vp{line-height:1.2}#vlk{font-size:34px;letter-spacing:6px;color:#ff2f7a;-webkit-text-stroke:1.5px #1e2a6b;paint-order:stroke fill;margin:4px 0}.vb{height:84px;font-size:30px;min-width:0;flex:1;touch-action:none;user-select:none;-webkit-user-select:none}/* [SOLO ANDROID ORIZZONTALE] home: logo grande e centrato, bottoni subito sotto */
 @media (orientation:landscape){
@@ -1158,11 +1160,11 @@ html.isand #menu .logo{max-height:26vh;width:min(60vw,380px)}
 <div class="scr" id="vs"><canvas id="vsc" style="left:0;top:0;width:100%;height:100%"></canvas><button class="btn sm" id="vsq" style="left:50%;transform:translateX(-50%);top:calc(env(safe-area-inset-top,0px) + 12px);min-width:0">Esci</button><div id="vsk" style="left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 16px);display:flex;gap:10px"><div id="vkh"></div><button class="btn vb" id="vsL">◀</button><button class="btn vb" id="vsR">▶</button><button class="btn b2 vb" id="vsS" style="flex:1.7;font-size:22px">Scivola</button><button class="btn vb" id="vsJ" style="flex:1.7;font-size:22px">Salta</button></div><div id="vso" class="panel" style="left:50%;top:40%;transform:translate(-50%,-50%);display:none"><h2 id="vst"></h2><p id="vsw"></p><p><button class="btn b3" id="vsr">Rivincita</button></p><p><button class="btn b2" id="vse">Esci</button></p></div></div>`);
 try{$('#vln').value=localStorage.getItem('glamNm')||''}catch(e){}
 const vsC=$('#vsc'),vg=vsC.getContext('2d'),vsMsgUi=m=>{$('#vlm').textContent=m},
-vsBc=(o,ex)=>{try{if(VS.host)VS.cons.forEach((c,i)=>{if(i&&i!=ex&&c&&c.open)c.send(o)});else VS.cn&&VS.cn.open&&VS.cn.send(o)}catch(e){}},
+vsBc=(o,ex,p)=>{try{const ok=c=>c&&c.open&&!(p&&c.dataChannel&&c.dataChannel.bufferedAmount>16384);if(VS.host)VS.cons.forEach((c,i)=>{if(i&&i!=ex&&ok(c))c.send(o)});else if(ok(VS.cn))VS.cn.send(o)}catch(e){}},vsPos=(a,o)=>({x:a[o],y:a[o+1],vy:a[o+2],d:a[o+3],s:a[o+4],hp:a[o+5],inv:a[o+6]}),
 vsNm=()=>{const n=($('#vln').value||'').trim().slice(0,12)||'Giocatore';try{localStorage.setItem('glamNm',n)}catch(e){}return n};
 function vsUi(){let b=$('#vsb');if(!b){b=[...document.querySelectorAll('#menu .btn')].find(x=>/^Gioca$/.test(x.textContent.trim()));if(!b)return;b.id='vsb';b.dataset.t=b.textContent;b.dataset.o=b.getAttribute('onclick')||''}
  if(VSM){b.textContent=TRM?'Torneo':'Multigiocatore';b.onclick=vsOpen}else{b.textContent=b.dataset.t;b.onclick=null;b.setAttribute('onclick',b.dataset.o)}trUi()}
-function vsOpen(){if(!VSM)return;vsClean();$('#vl1').style.display='';$('#vl2').style.display='none';vsMsgUi(TRM?'Torneo a eliminazione 1 contro 1: crea una stanza o entra con un codice.':'Gioca con un massimo di 5 amici: crea una stanza o entra con un codice.');show('vl')}
+function vsOpen(){if(!VSM)return;vsClean();vsLoad().catch(()=>{});$('#vl1').style.display='';$('#vl2').style.display='none';vsMsgUi(TRM?'Torneo a eliminazione 1 contro 1: crea una stanza o entra con un codice.':'Gioca con un massimo di 5 amici: crea una stanza o entra con un codice.');show('vl')}
 function vsClean(){TR.pod=0;try{VS.cn&&VS.cn.close()}catch(e){}try{VS.pr&&VS.pr.destroy()}catch(e){}VS.cn=VS.pr=null;VS.host=0;VS.cons=[];VS.names=[];VS.run=0}
 function vsQuit(){cancelAnimationFrame(VS.raf);vsClean();menu()}
 function vsLoad(){return window.Peer?Promise.resolve():new Promise((res,rej)=>{const u=['https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js','https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.4/peerjs.min.js','https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js'];let i=0;const n=()=>{if(i>=u.length)return rej();const s=document.createElement('script');s.src=u[i++];s.onload=res;s.onerror=()=>{s.remove();n()};document.head.appendChild(s)};n()})}
@@ -1177,18 +1179,24 @@ async function vsCreate(n){n=n||0;vsMsgUi('Connessione...');try{await vsLoad()}c
  pr.on('connection',c=>{c.on('data',m=>vsHostRx(c,m));c.on('close',()=>vsHostDrop(c))});
  pr.on('error',e=>{if(e.type=='unavailable-id'&&n<5)vsCreate(n+1);else vsMsgUi(e.type=='server-error'||e.type=='socket-error'||e.type=='socket-closed'?'Server non raggiungibile, riprova tra poco':'Errore di rete: '+e.type)})}
 function vsHostRx(c,m){if(!m)return;
+  if(Array.isArray(m)){if(c._i!=null&&m.length==7){const p=VS.P[c._i];if(p)vsApply(p,vsPos(m,0));vsBc([c._i].concat(m),c._i,1)}return}
  if(m.t=='hello'&&c._i==null){if(VS.run||VS.names.length>=6){try{c.send({t:'full',r:VS.run})}catch(e){}setTimeout(()=>{try{c.close()}catch(e){}},400);return}
   c._i=VS.names.length;VS.names.push(String(m.n||'Giocatore').slice(0,12));VS.cons.push(c);vsLb()}
  else if(m.t=='h'&&c._i!=null)vsHitRoute({to:m.to,fx:+m.fx||0,k:m.k});
  else if(m.t=='p'&&c._i!=null){const p=VS.P[c._i];if(p)vsApply(p,m);vsBc(Object.assign({},m,{i:c._i}),c._i)}}
 function vsHostDrop(c){const i=c._i;if(i==null)return;if(VS.run){TR.gone[i]=1;const p=VS.P[i];if(p&&p.hp>0){p.hp=0;toast(p.nm+' ha lasciato la partita')}vsBc({t:'g',i})}else{VS.names.splice(i,1);VS.cons.splice(i,1);VS.cons.forEach((x,k)=>{if(x)x._i=k});vsLb()}c._i=null}
 async function vsJoin(){const code=$('#vli').value.trim().toUpperCase();if(code.length!=4)return vsMsgUi('Scrivi il codice di 4 lettere della stanza');vsMsgUi('Connessione...');try{await vsLoad()}catch(e){return vsMsgUi('Serve internet per giocare online')}vsClean();
- const pr=VS.pr=new Peer(VSCFG);VS.code=code;setTimeout(()=>{if(VS.pr===pr&&!pr.open&&!pr.destroyed)vsMsgUi('Server non raggiungibile: controlla la connessione o riprova tra poco')},12000);pr.on('open',()=>{const c=VS.cn=pr.connect('glamrun-'+code,{reliable:true});
-  c.on('open',()=>{c.send({t:'hello',n:vsNm()});vsMsgUi('Connesso, entro nella stanza...')});c.on('data',vsRecv);c.on('error',e=>{if(!VS.run)vsMsgUi('Errore di connessione: '+(e&&e.type||e))});
-  c.on('close',()=>{if(VS.cn===c){VS.cn=null;if(VS.run){toast('Host disconnesso');vsQuit()}else{$('#vl1').style.display='';$('#vl2').style.display='none';vsMsgUi('Connessione chiusa')}}});
-  vsMsgUi('Connessione alla stanza...');setTimeout(()=>{if(!VS.run&&!VS.names.length&&VS.cn===c){vsMsgUi('Impossibile entrare nella stanza. Controlla il codice e riprova');try{c.close()}catch(e){}VS.cn=null}},25000)});
- pr.on('error',e=>vsMsgUi(e.type=='peer-unavailable'?'Stanza non trovata':e.type=='server-error'||e.type=='socket-error'||e.type=='socket-closed'?'Server non raggiungibile, riprova tra poco':'Errore di rete: '+e.type))}
-function vsRecv(m){if(!m)return;
+  const pr=VS.pr=new Peer(VSCFG);VS.code=code;setTimeout(()=>{if(VS.pr===pr&&!pr.open&&!pr.destroyed)vsMsgUi('Server non raggiungibile: controlla la connessione o riprova tra poco')},12000);
+  const mk=att=>{if(VS.pr!==pr||pr.destroyed)return;const c=VS.cn=pr.connect('glamrun-'+code,{reliable:true});
+   c.on('open',()=>{c.send({t:'hello',n:vsNm()});vsMsgUi('Connesso, entro nella stanza...')});c.on('data',vsRecv);c.on('error',e=>{if(!VS.run)vsMsgUi('Errore di connessione: '+(e&&e.type||e))});
+   c.on('iceStateChanged',st=>{if(st=='failed'&&VS.cn===c&&!c.open)vsMsgUi('Percorso diretto bloccato dalla rete, riprovo...')});
+   c.on('close',()=>{if(VS.cn===c){VS.cn=null;if(VS.run){toast('Host disconnesso');vsQuit()}else{$('#vl1').style.display='';$('#vl2').style.display='none';vsMsgUi('Connessione chiusa')}}});
+   vsMsgUi(att?'Nuovo tentativo '+(att+1)+'/3...':'Connessione alla stanza...');
+   setTimeout(()=>{if(!VS.run&&!c.open&&VS.cn===c){VS.cn=null;try{c.close()}catch(e){}if(att<2)mk(att+1);else vsMsgUi('Impossibile entrare: controlla il codice o prova con un\'altra rete')}},att?14000:12000)};
+  pr.on('open',()=>mk(0));
+  pr.on('error',e=>vsMsgUi(e.type=='peer-unavailable'?'Stanza non trovata':e.type=='server-error'||e.type=='socket-error'||e.type=='socket-closed'?'Server non raggiungibile, riprova tra poco':'Errore di rete: '+e.type))}
+ function vsRecv(m){if(!m)return;
+  if(Array.isArray(m)){if(m.length==8&&m[0]!=VS.my){const p=VS.P[m[0]];if(p)vsApply(p,vsPos(m,1))}return}
  if(m.t=='lobby'){VS.names=m.n;VS.my=m.you;vsLobby()}
  else if(m.t=='full'){vsClean();vsMsgUi(m.r?'Partita già iniziata, riprova dopo':'Stanza piena (massimo 6)')}
  else if(m.t=='h')vsHitMe(+m.fx||0,m.k);
@@ -1199,7 +1207,7 @@ function vsRecv(m){if(!m)return;
  else if(m.t=='tr')trSt(m.s,m.ev)
  else if(m.t=='end')vsEnd(m.w)}
 function vsApply(p,m){if(m.hp<p.hp)sfx('stomp');if(!p.f){p.x=m.x;p.y=m.y;p.f=1}p.tx=m.x;p.ty=m.y;p.vy=m.vy;p.d=m.d;p.s=m.s;p.hp=m.hp;p.inv=m.inv}
-function vsHitMe(fx,k){const m=VS.P[VS.my];if(k){if(m&&m.hp>0&&m.hit<=0&&!VS.over){m.kx=(m.x>=fx?1:-1)*480;m.hit=.3;m.st=0;m.s='h';m.vy=Math.max(m.vy,220);m.g=0;sfx('slide');vsSt()}return}if(m&&m.hp>0&&m.inv<=0&&m.hit<=0&&!VS.over)vsHurt(m,fx)}
+function vsHitMe(fx,k){const m=VS.P[VS.my];if(k){if(m&&m.hp>0&&m.hit<=0&&!VS.over){m.kx=(m.x>=fx?1:-1)*480;m.hit=.3;m.st=0;m.s='h';m.vy=Math.max(m.vy,220);m.g=0;sfx('slide');vsSt(1)}return}if(m&&m.hp>0&&m.inv<=0&&m.hit<=0&&!VS.over)vsHurt(m,fx)}
 function vsHitRoute(h){if(h.to==VS.my)vsHitMe(h.fx,h.k);else{const c=VS.cons[h.to];if(c&&c.open)try{c.send({t:'h',to:h.to,fx:h.fx,k:h.k})}catch(e){}}}
 function vsHit(to,fx,k){const h={t:'h',to,fx:+fx.toFixed(1),k:k?1:0};if(VS.host)vsHitRoute(h);else try{VS.cn&&VS.cn.open&&VS.cn.send(h)}catch(e){}}
 function vsHostStart(){if(!VS.host)return;const k=[];VS.cons.forEach((c,i)=>{if(i==0||(c&&c.open))k.push(i)});VS.names=k.map(i=>VS.names[i]);VS.cons=k.map(i=>VS.cons[i]);VS.cons.forEach((c,i)=>{if(c)c._i=i});VS.cons.forEach((c,i)=>{if(i&&c)try{c.send({t:'lobby',n:VS.names,you:i})}catch(e){}});
@@ -1226,7 +1234,7 @@ function vsBegin(seed,n,my,r,tie){r=r||0;const T2=TRM&&tie,pr=vsGen(seed,T2?2:n)
  VS.L={n:pr.n,th:TH[pr.th],pit:pr.pit.map(a=>({x0:a[0],w:a[1]})),cr:pr.cr.map(x=>({x,h:36,w:34})),sp};VS.my=my;
  VS.P=VS.names.slice(0,n).map((nm,i)=>({i,nm,x:sp[i],y:0,vy:0,d:sp[i]<pr.ww/2?1:-1,s:'i',hp:3,inv:0,hit:0,st:0,cd:0,kx:0,g:1,cy:0,f:0,tx:0,ty:0}));
  if(tie)VS.P.forEach(p=>{if(!tie.includes(p.i)){p.hp=0;p.y=-300}});
- updCtl();VS.over=0;VS.k.l=VS.k.r=0;VS.jq=VS.sq=0;VS.acc=0;VS.cam=Math.max(0,sp[my]-VS.W/2);VS.run=1;VS.sa=parseFloat(getComputedStyle(document.documentElement).paddingTop)||0;$('#vso').style.display='none';show('vs');vsLock(['#vsq']);toast(TRM?trLbl()+' · '+pr.n:VS.tb?'Spareggio · '+pr.n:'Match '+(r+1)+'/3 · '+pr.n);VS.last=performance.now();cancelAnimationFrame(VS.raf);VS.raf=requestAnimationFrame(vsLoop)}
+ updCtl();VS.over=0;VS.k.l=VS.k.r=0;VS.jq=VS.sq=0;VS.acc=0;VS.sl=null;VS.cam=Math.max(0,sp[my]-VS.W/2);VS.run=1;VS.sa=parseFloat(getComputedStyle(document.documentElement).paddingTop)||0;$('#vso').style.display='none';show('vs');vsLock(['#vsq']);toast(TRM?trLbl()+' · '+pr.n:VS.tb?'Spareggio · '+pr.n:'Match '+(r+1)+'/3 · '+pr.n);VS.last=performance.now();cancelAnimationFrame(VS.raf);VS.raf=requestAnimationFrame(vsLoop)}
 function vsEnd(w){if(VS.over)return;VS.over=1;const sr=VS.sr,r=VS.r,n=VS.P.length,p=VS.P[w];if(p)p.s='w';if(w>=0)sr.w[w]++;
  let fin=0,ch=-1,nx=0;if(r>=2){const W=sr.w.slice(0,n),mx=Math.max(...W),ld=[];W.forEach((x,i)=>x==mx&&ld.push(i));if(r>=3){fin=1;ch=w}else if(ld.length==1){fin=1;ch=ld[0]}else{nx=3;sr.tie=ld}}else nx=r+1;
  if(nx)sr.nx=nx;const me=VS.my,sc=VS.P.map(q=>'<span style="color:'+VC[q.i]+'">●</span> '+vsE(q.nm)+' <b>'+sr.w[q.i]+'</b>').join('<br>');
@@ -1237,9 +1245,9 @@ function vsEnd(w){if(VS.over)return;VS.over=1;const sr=VS.sr,r=VS.r,n=VS.P.lengt
  clearInterval(VS.ci);if(nx){let c=5;const sh=()=>{const e=$('#vsn');if(e)e.textContent=(nx==3?'Spareggio':'Prossimo match')+' tra '+c+' s'};sh();VS.ci=setInterval(()=>{c--;if(c<=0){clearInterval(VS.ci);if(VS.host)vsNext()}else sh()},1000)}
  else if(!VS.host)$('#vsn').textContent='Aspetta che l\'host riavvii...'}
 function vsGnd(L,x,y){for(const p of L.pit)if(x>p.x0+10&&x<p.x0+p.w-10)return null;for(const c of L.cr)if(Math.abs(x-c.x)<c.w/2+8&&y>=c.h-8)return c.h;return 0}
-function vsSt(){const m=VS.P[VS.my];if(m)vsBc({t:'p',i:VS.my,x:+m.x.toFixed(1),y:+m.y.toFixed(1),vy:m.vy|0,d:m.d,s:m.s,hp:m.hp,inv:+Math.max(0,m.inv).toFixed(2)})}
-function vsHurt(m,fx){m.hp--;m.hit=.55;m.inv=1.3;m.st=0;m.kx=(m.x>=fx?1:-1)*240;m.vy=Math.max(m.vy,260);m.g=0;m.s='h';sfx('hurt');vsSt()}
-function vsLose(m){m.hp--;sfx('hurt');if(m.hp>0){m.x=VS.L.sp[m.i];m.y=60;m.vy=0;m.inv=1.8;m.hit=0;m.st=0;m.kx=0}else m.y=-300;vsSt()}
+function vsSt(f){const m=VS.P[VS.my];if(!m)return;const a=[+m.x.toFixed(1),+m.y.toFixed(1),m.vy|0,m.d,m.s,m.hp,+Math.max(0,m.inv).toFixed(1)],l=VS.sl,n=performance.now();if(!f&&l&&n-VS.sn<300&&l[0]==a[0]&&l[1]==a[1]&&l[3]==a[3]&&l[4]==a[4]&&l[5]==a[5])return;VS.sl=a;VS.sn=n;vsBc(VS.host?[VS.my].concat(a):a,undefined,1)}
+function vsHurt(m,fx){m.hp--;m.hit=.55;m.inv=1.3;m.st=0;m.kx=(m.x>=fx?1:-1)*240;m.vy=Math.max(m.vy,260);m.g=0;m.s='h';sfx('hurt');vsSt(1)}
+function vsLose(m){m.hp--;sfx('hurt');if(m.hp>0){m.x=VS.L.sp[m.i];m.y=60;m.vy=0;m.inv=1.8;m.hit=0;m.st=0;m.kx=0}else m.y=-300;vsSt(1)}
 function vsUpd(dt){if(TRM&&TR.pod)return;const L=VS.L,m=VS.P[VS.my];
  for(const p of VS.P){if(p.hit>0)p.hit-=dt;if(p.inv>0)p.inv-=dt;if(p!==m&&p.f){const a=Math.min(1,dt*14);p.x+=(p.tx-p.x)*a;p.y+=(p.ty-p.y)*a}}
  if(m&&m.hp>0&&!VS.over){const k=VS.k;if(m.cd>0)m.cd-=dt;if(m.cy>0)m.cy-=dt;
@@ -1257,9 +1265,9 @@ function vsUpd(dt){if(TRM&&TR.pod)return;const L=VS.L,m=VS.P[VS.my];
    if(m.hit<=0&&!(o.hc>0)){
     if(o.inv<=0&&m.vy<-60&&dy<-28&&dy>-110&&dx<38){m.vy=520;m.g=0;m.cy=0;sfx('stomp');o.hc=.6;o.inv=1.3;vsHit(o.i,m.x)}
     else if(m.s=='s'&&dx<48&&m.y<14&&o.y<14&&o.s!='s'&&(o.x-m.x)*m.d>-8){o.hc=.5;vsHit(o.i,m.x,1)}}}
-  VS.acc+=dt;if(VS.acc>.035){VS.acc=0;vsSt()}}
+  VS.acc+=dt;if(VS.acc>.05){VS.acc=0;vsSt()}}
  if(VS.host&&!VS.over){const al=VS.P.filter(p=>p.hp>0);if(TRM&&al.length>1&&VS.T-TR.t0>TRLIM)al.sort((a,b)=>b.hp-a.hp||Math.random()-.5),al.length=1;if(al.length<=1){const w=al[0]?al[0].i:-1;vsBc({t:'end',w});vsEnd(w)}}}
-function vsDraw(){if(TRM&&TR.pod)return trPod();const c=vg,d=devicePixelRatio||1,s=VS.s,W=VS.W,H=VS.H,gy=H*.78,L=VS.L,me=VS.P[VS.my];c.setTransform(s*d,0,0,s*d,0,0);
+function vsDraw(){if(TRM&&TR.pod)return trPod();const c=vg,d=Math.min(2,devicePixelRatio||1),s=VS.s,W=VS.W,H=VS.H,gy=H*.78,L=VS.L,me=VS.P[VS.my];c.setTransform(s*d,0,0,s*d,0,0);
  const th=L.th;vsBgF(c,W,H,gy,VS.cam,th,VS.T);vsGndF(c,W,H,gy,VS.cam,th,L.pit.map(p=>({x:p.x0,w:p.w})));
  c.save();c.translate(-VS.cam,0);for(const q of L.cr){vsBox(c,q.x-q.w/2,gy-q.h,q.w,q.h,'#ffe58a','#ffc928','#d9981a',9);c.fillStyle='#8a5a00';c.font='700 22px Fredoka,sans-serif';c.textAlign='center';c.fillText('?',q.x,gy-9)}
  const MAP={i:'idle',r:'run',j:'jump',f:'fall',s:'slide',h:'hurt',w:'win'};
@@ -1290,7 +1298,7 @@ function vsGndF(g,VW,VH,GY,cam,Th,gp){
  for(const p of gp){const sx=p.x-cam;if(sx>VW||sx+p.w<-20)continue;let pg=g.createLinearGradient(0,GY-10,0,VH);if(Th.aq){pg.addColorStop(0,'#48c6ff');pg.addColorStop(.35,'#1f8fe0');pg.addColorStop(1,'#0a3d86')}else{pg.addColorStop(0,'#2a1a5e');pg.addColorStop(1,'#0b0726')}g.fillStyle=pg;g.fillRect(sx,GY-10,p.w,VH);if(Th.aq)aqWave(sx,p.w);else{g.fillStyle='#1e2a6b';g.fillRect(sx-2,GY-10,4,VH);g.fillRect(sx+p.w-2,GY-10,4,VH)}}}
 function vsHud(c){const L=VS.L,y=18+VS.sa/VS.s;c.save();c.lineJoin='round';c.textAlign='left';c.lineWidth=4;c.strokeStyle='#1e2a6b';c.fillStyle='#fff';c.font='700 15px Fredoka,sans-serif';const tt=TRM?trLbl()+' · '+L.n+' · '+trTime():VS.tb?'Spareggio · '+L.n:'Match '+(VS.r+1)+'/3 · '+L.n;c.strokeText(tt,12,y);c.fillText(tt,12,y);let x=12;(TRM?VS.P.filter(p=>TR.cur&&TR.cur.includes(p.i)):VS.P).forEach(p=>{const s=TRM?p.nm:String(VS.sr.w[p.i]);c.fillStyle=VC[p.i];c.strokeStyle='#1e2a6b';c.beginPath();c.arc(x+7,y+17,7,0,7);c.fill();c.stroke();c.fillStyle='#fff';c.strokeText(s,x+18,y+22);c.fillText(s,x+18,y+22);x+=TRM?c.measureText(s).width+34:42});c.restore()}
 function vsLoop(t){if(!VS.run)return;VS.raf=requestAnimationFrame(vsLoop);const dt=Math.min(.05,(t-VS.last)/1e3||0);VS.last=t;VS.T+=dt;
- const w=innerWidth,h=innerHeight,d=devicePixelRatio||1;VS.s=h/VS.H;VS.W=w/VS.s;if(vsC.width!=(w*d|0)||vsC.height!=(h*d|0)){vsC.width=w*d;vsC.height=h*d}
+ const w=innerWidth,h=innerHeight,d=Math.min(2,devicePixelRatio||1);VS.s=h/VS.H;VS.W=w/VS.s;if(vsC.width!=(w*d|0)||vsC.height!=(h*d|0)){vsC.width=w*d;vsC.height=h*d}
  vsUpd(dt);const me=VS.P[VS.my],tg=me&&me.hp>0?me:VS.P.find(p=>p.hp>0)||me;if(tg){const want=VS.W>=VS.WW?-(VS.W-VS.WW)/2:Math.max(0,Math.min(VS.WW-VS.W,trCx(tg)-VS.W/2));VS.cam+=(want-VS.cam)*Math.min(1,dt*8)}vsDraw()}
 $('#vlc').onclick=()=>vsCreate();$('#vlj').onclick=vsJoin;$('#vlx').onclick=()=>{vsClean();menu()};$('#vlq').onclick=vsOpen;$('#vlg').onclick=vsHostStart;$('#vsq').onclick=$('#vse').onclick=vsTry;$('#vsr').onclick=vsHostStart;
 const vsHold=(id,key)=>{const b=$(id),on=e=>{e.preventDefault();VS.k[key]=1},off=e=>{e.preventDefault();VS.k[key]=0};b.onpointerdown=on;b.onpointerup=b.onpointercancel=b.onpointerleave=off;b.oncontextmenu=e=>e.preventDefault()};
@@ -1337,7 +1345,7 @@ function trBr(){const nm=(x,i)=>`<span class="${x.w==i?'trw':x.w>=0?'trl':''}"><
  return TR.rd.map(R=>'<div class="trh">'+R.nm+'</div>'+R.ms.map(x=>x.b==-2?`<div class="trm">${nm(x,x.a)}<em>passa il turno</em></div>`:`<div class="trm${x.w<0?' trn':''}">${nm(x,x.a)}<em>vs</em>${nm(x,x.b)}</div>`).join('')).join('')}
 function trCl(){const st=VS.names.map(()=>[0,0]);TR.rd.forEach(R=>R.ms.forEach(x=>{if(x.b==-2||x.w<0)return;st[x.w][0]++;st[x.w==x.a?x.b:x.a][1]++}));
  return TR.pl.map((i,k)=>`<div class="trr${i==VS.my?' me':''}"><span class="trp p${k}">${k+1}</span><i style="background:${VC[i]}"></i><b>${vsE(VS.names[i])}</b><em>${st[i][0]}V ${st[i][1]}S</em></div>`).join('')}
-function trPod(){const c=vg,d=devicePixelRatio||1,s=VS.s,W=VS.W,H=VS.H,gy=H*.78,L=VS.L,pl=TR.pl,T=VS.T;c.setTransform(s*d,0,0,s*d,0,0);vsBgF(c,W,H,gy,0,L.th,T);vsGndF(c,W,H,gy,0,L.th,[]);
+function trPod(){const c=vg,d=Math.min(2,devicePixelRatio||1),s=VS.s,W=VS.W,H=VS.H,gy=H*.78,L=VS.L,pl=TR.pl,T=VS.T;c.setTransform(s*d,0,0,s*d,0,0);vsBgF(c,W,H,gy,0,L.th,T);vsGndF(c,W,H,gy,0,L.th,[]);
  const hs=[120,86,58],sp=Math.max(70,Math.min(112,(W-96)/2)),bw=Math.min(96,sp-6),xs=[W/2,W/2-sp,W/2+sp],cl=['#ffc928','#d7e0f5','#e0904a'];c.textAlign='center';c.lineJoin='round';
  for(let k=2;k>=0;k--){const i=pl[k];if(i==null)continue;const x=xs[k],h=hs[k];vsBox(c,x-bw/2,gy-h,bw,h,cl[k],cl[k],'#0003',10);c.fillStyle='#1e2a6b';c.font='700 36px Fredoka,sans-serif';c.fillText(k+1,x,gy-h/2+12);
   hero(c,x,gy-h,k?'idle':'win',T,VSK[i],0,0);c.font='700 17px Fredoka,sans-serif';const nm=VS.names[i]||'',w=c.measureText(nm).width+22,ty=gy-h-112;c.fillStyle=VC[i];c.strokeStyle=i==VS.my?'#fff':'#1e2a6b';c.lineWidth=4;c.beginPath();if(c.roundRect)c.roundRect(x-w/2,ty-18,w,27,13);else c.rect(x-w/2,ty-18,w,27);c.fill();c.stroke();c.fillStyle='#fff';c.fillText(nm,x,ty+1)}
